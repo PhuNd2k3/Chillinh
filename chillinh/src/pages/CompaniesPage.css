@@ -1,0 +1,235 @@
+.companies-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 120px;
+}
+
+.companies-header {
+    text-align: center;
+    margin-bottom: 3.6rem;
+}
+
+.companies-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: #222;
+}
+
+.companies-header .highlight {
+    color: #3366FF;
+}
+
+.companies-header p {
+    color: #888;
+    font-size: 1.08rem;
+    margin-bottom: 1.5rem;
+}
+
+.companies-content {
+    display: flex;
+    gap: 2rem;
+}
+
+.filters-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f2f2f2;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
+
+.search-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.7rem 0;
+    background: #3366FF;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background: #2952cc;
+}
+
+.job-title-link {
+    display: inline-block;
+    color: #3366FF;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.7rem;
+    text-decoration: none;
+    transition: text-decoration 0.2s;
+}
+
+.job-title-link:hover {
+    text-decoration: underline;
+}
+
+.filter-section {
+    margin-bottom: 1.2rem;
+}
+
+.filter-section h3 {
+    font-size: 1.01rem;
+    color: #222;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+}
+
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.filter-options label {
+    font-size: 0.97rem;
+    color: #444;
+}
+
+.filter-options input[type="checkbox"],
+.filter-options input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.companies-list {
+    flex: 1;
+}
+
+.companies-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    margin-top: 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #eee;
+}
+
+.companies-list-header.popular {
+    margin-top: 2.5rem;
+}
+
+.companies-list-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.sort-dropdown {
+    min-width: 100px;
+    width: auto;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.97rem;
+}
+
+.companies-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.company-card {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1.2rem 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f2f2f2;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.company-card:hover {
+    box-shadow: 0 12px 32px rgba(51, 102, 255, 0.22);
+    transform: translateY(-3px) scale(1.02);
+}
+
+.company-logo {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.company-info {
+    flex: 1;
+}
+
+.company-info h3 {
+    font-size: 1rem;
+    color: #222;
+    margin-bottom: 0.2rem;
+    font-weight: 700;
+}
+
+.company-info h4 {
+    font-size: 1rem;
+    color: #3366FF;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.company-details {
+    display: flex;
+    gap: 0.7rem;
+    margin-bottom: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.company-details span {
+    font-size: 0.92rem;
+    color: #666;
+    padding: 0.18rem 0.7rem;
+    background: #f5f6fa;
+    border-radius: 5px;
+    border: 1px solid #eee;
+}
+
+.company-description {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+    .companies-content {
+        flex-direction: column;
+    }
+
+    .filters-sidebar {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+}
