@@ -13,7 +13,6 @@ const HomePage = () => {
           <Link to="/profile">Thông tin cá nhân</Link>
         </div>
       </nav>
-
       <div className="content">
         <h1>Không chỉ tìm việc<br />hãy chọn nơi xứng đáng</h1>
         <p>Khám phá những chia sẻ thật từ cộng đồng người đi làm để có lựa chọn đúng đắn</p>
