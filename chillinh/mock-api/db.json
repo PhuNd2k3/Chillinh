@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Nguyen Van A",
       "university": "Đại học Bách Khoa Hà Nội",
       "major": "Công nghệ thông tin",
@@ -28,7 +28,7 @@
   ],
   "companies": [
     {
-      "id": 1,
+      "id": "1",
       "name": "FPT Software",
       "industry": "Phát triển phần mềm",
       "description": "Công ty phần mềm lớn tại Việt Nam",
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Toyota Vietnam",
       "industry": "Kỹ thuật cơ khí",
       "description": "Doanh nghiệp lớn trong ngành ô tô",
@@ -53,7 +53,7 @@
   ],
   "posts": [
     {
-      "id": 1,
+      "id": "1",
       "userId": 1,
       "companyId": 1,
       "title": "Trải nghiệm thực tập tại FPT Software",
@@ -70,7 +70,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "userId": 1,
       "companyId": 1,
       "title": "Có nên chọn FPT làm nơi thực tập không?",
@@ -86,16 +86,42 @@
   ],
   "comments": [
     {
-      "id": 1,
+      "id": "1",
       "postId": 1,
       "userId": 1,
       "content": "Cảm ơn bạn đã chia sẻ, mình cũng định apply vào đây!"
     },
     {
-      "id": 2,
+      "id": "2",
       "postId": 1,
       "userId": 1,
       "content": "Mentor ở đó có hướng dẫn kỹ không bạn?"
+    }
+  ],
+  "votes": [
+    {
+      "id": "1",
+      "postId": 1,
+      "userId": 1,
+      "type": "upvote"
+    },
+    {
+      "id": "2",
+      "postId": 1,
+      "userId": 2,
+      "type": "downvote"
+    },
+    {
+      "id": "340a",
+      "postId": 1,
+      "userId": 99,
+      "type": "upvote"
+    },
+    {
+      "id": "a20c",
+      "postId": 1,
+      "userId": 5,
+      "type": "downvote"
     }
   ]
 }
