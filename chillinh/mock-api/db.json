@@ -1,8 +1,101 @@
 {
   "users": [
     {
-      "id": "1",
-      "name": "Phú"
+      "id": 1,
+      "name": "Nguyen Van A",
+      "university": "Đại học Bách Khoa Hà Nội",
+      "major": "Công nghệ thông tin",
+      "skills": [
+        "Java",
+        "React",
+        "SQL"
+      ],
+      "languages": [
+        "Tiếng Nhật - N3",
+        "Tiếng Anh - IELTS 6.0"
+      ],
+      "preferredIndustries": [
+        "Phân tích dữ liệu",
+        "Phát triển phần mềm"
+      ],
+      "workHours": "<20h",
+      "internshipMode": "Hybrid"
+    },
+    {
+      "id": "4d96",
+      "name": "Đẳng cấp"
+    }
+  ],
+  "companies": [
+    {
+      "id": 1,
+      "name": "FPT Software",
+      "industry": "Phát triển phần mềm",
+      "description": "Công ty phần mềm lớn tại Việt Nam",
+      "score": 4.5,
+      "comments": [
+        1
+      ],
+      "relatedPosts": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Toyota Vietnam",
+      "industry": "Kỹ thuật cơ khí",
+      "description": "Doanh nghiệp lớn trong ngành ô tô",
+      "score": 4,
+      "comments": [],
+      "relatedPosts": []
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "companyId": 1,
+      "title": "Trải nghiệm thực tập tại FPT Software",
+      "content": "Môi trường làm việc năng động, mentor nhiệt tình.",
+      "comments": [
+        1,
+        2
+      ],
+      "upvotes": 10,
+      "downvotes": 1,
+      "tags": [
+        "FPT",
+        "Internship"
+      ]
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "companyId": 1,
+      "title": "Có nên chọn FPT làm nơi thực tập không?",
+      "content": "Mình đang phân vân giữa FPT và Viettel.",
+      "comments": [],
+      "upvotes": 4,
+      "downvotes": 0,
+      "tags": [
+        "FPT",
+        "Viettel"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "postId": 1,
+      "userId": 1,
+      "content": "Cảm ơn bạn đã chia sẻ, mình cũng định apply vào đây!"
+    },
+    {
+      "id": 2,
+      "postId": 1,
+      "userId": 1,
+      "content": "Mentor ở đó có hướng dẫn kỹ không bạn?"
     }
   ]
 }
