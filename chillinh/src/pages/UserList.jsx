@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Header from "../components/Header/Header";
 
 const API = "http://localhost:3001/users";
 
@@ -30,6 +31,7 @@ export default function UserList() {
 
   return (
     <div>
+      <Header />
       <h2>Người dùng</h2>
       <input
         value={name}

@@ -16,31 +16,50 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
-.navbar {
+.homepage-navbar {
     display: flex;
     justify-content: space-between;
     padding: 20px 40px;
     font-size: 14px;
 }
 
-.logo {
+.homepage-logo {
     font-weight: bold;
     font-size: 18px;
     color: white;
 }
 
-.nav-links a {
+.homepage-logo-combo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.homepage-logo-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.homepage-logo-text {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.homepage-nav-links a {
     color: white;
     text-decoration: none;
     margin-left: 24px;
     transition: opacity 0.2s ease;
 }
 
-.nav-links a:hover {
+.homepage-nav-links a:hover {
     opacity: 0.8;
 }
 
-.content {
+.homepage-content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -50,19 +69,19 @@
     padding: 0 20px;
 }
 
-.content h1 {
+.homepage-content h1 {
     font-size: 40px;
     font-weight: bold;
     line-height: 1.4;
     margin-bottom: 16px;
 }
 
-.content p {
+.homepage-content p {
     font-size: 16px;
     margin-bottom: 40px;
 }
 
-.start-button {
+.homepage-start-button {
     background: white;
     color: #1f0e84;
     padding: 14px 28px;
@@ -70,9 +89,11 @@
     text-decoration: none;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.start-button:hover {
-    transform: translateY(-2px);
+.homepage-start-button:hover {
+    transform: translateY(-4px); /* Nút nhô lên khi hover */
+    background-color: #f0f0f0; /* Thay đổi màu nền khi hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Tăng độ sâu bóng */
 }
