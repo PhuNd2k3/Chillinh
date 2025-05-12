@@ -6,17 +6,19 @@ import logo from "../../../public/pictures/logo.png"; // điều chỉnh nếu �
 const Header = () => {
   return (
     <header className="header">
-      <div className="logo">
-        <Link to="/" className="logo-combo">
-          <img src={logo} alt="Growell Logo" className="logo-img" />
-          <span className="logo-text">growell</span>
-        </Link>
+      <div className="header-container">
+        <div className="logo">
+          <Link to="/" className="logo-link">
+            <img src={logo} alt="growell" />
+            <span>growell</span>
+          </Link>
+        </div>
+        <nav className="nav-menu">
+          <Link to="/companies" className="nav-link">Danh sách công ty</Link>
+          <Link to="/forums" className="nav-link">Thảo luận</Link>
+          <Link to="/profile" className="nav-link">Thông tin cá nhân</Link>
+        </nav>
       </div>
-      <nav className="nav-links">
-        <Link to="/companies">Danh sách công ty</Link>
-        <Link to="/forum">Thảo luận</Link>
-        <Link to="/profile">Thông tin cá nhân</Link>
-      </nav>
     </header>
   );
 };
