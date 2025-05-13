@@ -3,6 +3,7 @@ import './CompaniesPage.css';
 import msbLogo from '../assets/logos/msb-logo.svg';
 import upbaseLogo from '../assets/logos/upbase-logo.svg';
 import Header from '../components/Header/Header';
+import { Link } from 'react-router-dom';
 
 const CompaniesPage = () => {
     const [filters, setFilters] = useState({
@@ -141,7 +142,7 @@ const CompaniesPage = () => {
                                     <img src={company.logo} alt={company.name} />
                                 </div>
                                 <div className="company-info">
-                                    <h3>{company.name}</h3>
+                                    <h3><Link to={`/companies/${company.id}`}>{company.name}</Link></h3>
                                     <a href="#" className="job-title-link">{company.position}</a>
                                     <div className="company-details">
                                         <span>{company.location}</span>
@@ -169,7 +170,7 @@ const CompaniesPage = () => {
                                     <img src={company.logo} alt={company.name} />
                                 </div>
                                 <div className="company-info">
-                                    <h3>{company.name}</h3>
+                                    <h3><Link to={`/companies/${company.id}`}>{company.name}</Link></h3>
                                     <a href="#" className="job-title-link">{company.position}</a>
                                     <div className="company-details">
                                         <span>{company.location}</span>
