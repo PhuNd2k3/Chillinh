@@ -53,6 +53,79 @@
       "score": 4,
       "comments": [],
       "relatedPosts": []
+    },
+    {
+      "id": "3",
+      "name": "Công ty Cổ phần MISA",
+      "website": "https://www.misa.vn/",
+      "address": "Cầu Giấy, Hà Nội",
+      "employees": "3000+ nhân viên",
+      "industry": "Công nghệ",
+      "description": "Công ty hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn diện SaaS",
+      "about": "Trong suốt hành trình gần 30 năm tiên phong, MISA tự hào là công ty hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn diện SaaS (Software-as-a-Service) với gần 60 sản phẩm, ứng dụng cho 350.000 khách hàng là cơ quan nhà nước, doanh nghiệp, hộ kinh doanh và 3,5 triệu khách hàng cá nhân tại Việt Nam và 22 quốc gia trên thế giới. MISA vinh dự khi được đồng hành cùng các Bộ, ban, ngành trong chương trình Chuyển đổi số quốc gia, tự động hoá hoạt động quản lý, kinh doanh, giúp nâng cao năng suất và góp phần vào sự phát triển chung của Việt Nam.",
+      "jobs": [
+        {
+          "id": "job1",
+          "title": "Business Analyst",
+          "location": "Hà Nội",
+          "salary": "10 triệu",
+          "type": "Toàn thời gian",
+          "posted": "2024-05-12T09:00:00Z",
+          "description": "MISA tự hào là công ty hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn diện SaaS với gần 60 sản phẩm, ứng dụng cho 350.000 khách hàng là cơ quan nhà nước, doanh nghiệp, hộ kinh doanh."
+        },
+        {
+          "id": "job2",
+          "title": "Product Manager",
+          "location": "Hà Nội",
+          "salary": "30 triệu",
+          "type": "Toàn thời gian",
+          "posted": "2024-05-12T09:00:00Z",
+          "description": "MISA tự hào là công ty hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn diện SaaS với gần 60 sản phẩm, ứng dụng cho 350.000 khách hàng là cơ quan nhà nước, doanh nghiệp, hộ kinh doanh."
+        },
+        {
+          "id": "job3",
+          "title": "Data Analyst",
+          "location": "Hà Nội",
+          "salary": "10 triệu",
+          "type": "Toàn thời gian",
+          "posted": "2024-05-12T09:00:00Z",
+          "description": "MISA tự hào là công ty hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn diện SaaS với gần 60 sản phẩm, ứng dụng cho 350.000 khách hàng là cơ quan nhà nước, doanh nghiệp, hộ kinh doanh."
+        },
+        {
+          "id": "job4",
+          "title": "UI Designer",
+          "location": "Hà Nội",
+          "salary": "10 triệu",
+          "type": "Toàn thời gian",
+          "posted": "2024-05-12T09:00:00Z",
+          "description": "MISA tự hào là công ty hàng đầu Việt Nam cung cấp giải pháp chuyển đổi số toàn diện SaaS với gần 60 sản phẩm, ứng dụng cho 350.000 khách hàng là cơ quan nhà nước, doanh nghiệp, hộ kinh doanh."
+        }
+      ],
+      "reviews": [
+        {
+          "id": "review1",
+          "user": "Ngô Thức",
+          "rating": 4,
+          "content": "Văn phòng hiện đại, thoáng mát. Văn hoá mở, đề cao sự chủ động và học hỏi. Tuy nhiên, đôi khi áp lực tiến độ khiến không khí căng thẳng vào cuối quý. Mức lương ở mức trung bình ngành. Phúc lợi cơ bản đầy đủ (BHXH, nghỉ phép), có thêm quỹ đào tạo nội bộ nhưng không nhiều trợ cấp khác. Không có bonus rõ ràng theo hiệu suất cá nhân.",
+          "date": "2024-05-12T09:00:00Z",
+          "replies": [
+            {
+              "id": "reply1",
+              "user": "Hoàng Phong",
+              "content": "Bạn có thể chia sẻ thêm về cơ hội phát triển khi làm việc tại đây không?",
+              "date": "2024-05-12T21:00:00Z"
+            },
+            {
+              "id": "reply2",
+              "user": "Ngô Thức",
+              "content": "Công ty khuyến khích học thêm, có hỗ trợ học phí khoá ngắn hạn. Quản lý sẵn sàng coaching. Tuy nhiên lộ trình thăng tiến chưa rõ ràng với các cấp bậc chuyên viên.",
+              "date": "2024-05-12T21:30:00Z"
+            }
+          ]
+        }
+      ],
+      "rating": 4.0,
+      "ratingCount": 121
     }
   ],
   "posts": [
