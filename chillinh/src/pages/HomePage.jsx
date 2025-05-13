@@ -15,7 +15,7 @@ const HomePage = () => {
         </div>
         <div className="homepage-nav-links">
           <Link to="/companies">Danh sách công ty</Link>
-          <Link to="/forum">Thảo luận</Link>
+          <Link to="/forums">Thảo luận</Link>
           <Link to="/profile">Thông tin cá nhân</Link>
         </div>
       </nav>
