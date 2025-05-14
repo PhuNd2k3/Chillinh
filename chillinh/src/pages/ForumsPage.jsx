@@ -1,228 +1,132 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header/Header";
 import "./ForumsPage.css";
 import NewPostModal from "./NewPostModal";
-
-const mockPosts = [
-  {
-    id: 1,
-    author: "Ngô Thức",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    time: "7 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-    rating: 4,
-    content:
-      "Môi trường làm việc thoải mái, văn phòng hiện đại, nhiều hoạt động, chế độ tốt. Tuy nhiên, đôi lúc công việc hơi áp lực, deadline gấp. Sếp thân thiện, đồng nghiệp hỗ trợ nhau tốt. Lương ổn so với mặt bằng chung, có nhiều cơ hội học hỏi và phát triển kỹ năng. Sẽ giới thiệu bạn bè vào làm nếu có cơ hội.",
-    votes: 10,
-    comments: 5,
-    replies: [
-      {
-        id: 11,
-        author: "Hoàng Phong",
-        avatar: "https://randomuser.me/api/portraits/men/33.jpg",
-        time: "1 giờ trước",
-        content: "Bạn có thể mô tả thêm về chính sách phúc lợi và lương thưởng ở đây không?",
-      },
-      {
-        id: 13,
-        author: "Nguyễn Văn A",
-        avatar: "https://randomuser.me/api/portraits/men/34.jpg",
-        time: "30 phút trước",
-        content: "Cảm ơn bạn đã chia sẻ thông tin hữu ích!",
-      },
-      {
-        id: 14,
-        author: "Trần Thị B",
-        avatar: "https://randomuser.me/api/portraits/women/35.jpg",
-        time: "10 phút trước",
-        content: "Môi trường làm việc có áp lực không bạn?",
-      },
-    ],
-  },
-  {
-    id: 2,
-    author: "Ngô Thức",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    time: "2 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-    rating: 4,
-    content:
-      "Công ty có nhiều training, thích hợp cho sinh viên mới ra trường, chế độ lương ổn định, môi trường làm việc hiện đại.",
-    votes: 7,
-    comments: 2,
-    replies: [
-      {
-        id: 12,
-        author: "Hoàng Phong",
-        avatar: "https://randomuser.me/api/portraits/men/33.jpg",
-        time: "1 giờ trước",
-        content: "Cảm ơn bạn đã chia sẻ!",
-      },
-      {
-        id: 15,
-        author: "Nguyễn Văn C",
-        avatar: "https://randomuser.me/api/portraits/men/36.jpg",
-        time: "5 phút trước",
-        content: "Bạn có thể nói rõ hơn về cơ hội thăng tiến không?",
-      },
-    ],
-  },
-  // Bài viết mới 3
-  {
-    id: 3,
-    author: "Lê Minh Tuấn",
-    avatar: "https://randomuser.me/api/portraits/men/37.jpg",
-    time: "5 ngày trước",
-    company: "Công ty Công nghệ Cổ phần UPBASE",
-    companyLink: "/companies/2",
-    rating: 5,
-    content:
-      "UPBASE là môi trường trẻ trung, năng động, đồng nghiệp thân thiện, sếp tâm lý. Được học hỏi nhiều về công nghệ mới và phát triển bản thân.",
-    votes: 15,
-    comments: 3,
-    replies: [
-      {
-        id: 16,
-        author: "Nguyễn Văn D",
-        avatar: "https://randomuser.me/api/portraits/men/38.jpg",
-        time: "2 ngày trước",
-        content: "Bạn có thể chia sẻ thêm về chế độ đãi ngộ không?",
-      },
-    ],
-  },
-  // Bài viết mới 4
-  {
-    id: 4,
-    author: "Trần Thị Mai",
-    avatar: "https://randomuser.me/api/portraits/women/39.jpg",
-    time: "1 ngày trước",
-    company: "Ngân hàng TMCP Hàng Hải Việt Nam (MSB)",
-    companyLink: "/companies/3",
-    rating: 3,
-    content:
-      "Áp lực công việc khá lớn nhưng bù lại lương thưởng tốt, có nhiều cơ hội thăng tiến nếu cố gắng.",
-    votes: 4,
-    comments: 1,
-    replies: [
-      {
-        id: 17,
-        author: "Lê Văn E",
-        avatar: "https://randomuser.me/api/portraits/men/40.jpg",
-        time: "1 ngày trước",
-        content: "Cảm ơn bạn đã chia sẻ thực tế!",
-      },
-    ],
-  },
-  // Bài viết mới 5
-  {
-    id: 5,
-    author: "Phạm Quốc Bảo",
-    avatar: "https://randomuser.me/api/portraits/men/41.jpg",
-    time: "3 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-    rating: 4,
-    content:
-      "MISA có nhiều hoạt động ngoại khóa, văn hóa công ty tốt, phù hợp với các bạn trẻ thích môi trường năng động.",
-    votes: 9,
-    comments: 2,
-    replies: [
-      {
-        id: 18,
-        author: "Nguyễn Thị F",
-        avatar: "https://randomuser.me/api/portraits/women/42.jpg",
-        time: "2 ngày trước",
-        content: "Bạn có thể chia sẻ về cơ hội phát triển nghề nghiệp không?",
-      },
-    ],
-  },
-];
-
-const mockLatest = [
-  {
-    id: 1,
-    title: "Công ty Cổ phần MISA vừa nhận được review mới",
-    author: "Ngô Thức",
-    time: "7 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-  },
-  {
-    id: 2,
-    title: "Công ty Cổ phần MISA vừa nhận được review mới",
-    author: "Ngô Thức",
-    time: "2 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-  },
-  {
-    id: 3,
-    title: "Công ty Cổ phần MISA vừa nhận được review mới",
-    author: "Ngô Thức",
-    time: "1 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-  },
-  {
-    id: 4,
-    title: "Công ty Cổ phần MISA vừa nhận được review mới",
-    author: "Ngô Thức",
-    time: "1 ngày trước",
-    company: "Công ty Cổ phần MISA",
-    companyLink: "/companies/1",
-  },
-];
+import axios from 'axios';
 
 function ForumsPage() {
-  // State cho vote và hiển thị bình luận
-  const [posts, setPosts] = useState(
-    mockPosts.map((post) => ({
-      ...post,
-      showAllReplies: false,
-      voteCount: post.votes,
-    }))
-  );
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Xử lý vote up
-  const handleVoteUp = (postId) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId ? { ...post, voteCount: post.voteCount + 1 } : post
-      )
-    );
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const [postsRes, usersRes, commentsRes, votesRes] = await Promise.all([
+        axios.get('http://localhost:3001/posts'),
+        axios.get('http://localhost:3001/users'),
+        axios.get('http://localhost:3001/comments'),
+        axios.get('http://localhost:3001/votes')
+      ]);
+
+      const postsData = postsRes.data.map(post => {
+        const author = usersRes.data.find(user => user.id === post.userId);
+        const postComments = commentsRes.data.filter(comment => comment.postId === post.id);
+        const postVotes = votesRes.data.filter(vote => vote.postId === post.id);
+        
+        return {
+          id: post.id,
+          author: author?.name || 'Unknown User',
+          avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
+          time: new Date(post.createdAt).toLocaleString('vi-VN', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+          }),
+          content: post.content,
+          title: post.title,
+          voteCount: postVotes.filter(v => v.type === 'upvote').length - postVotes.filter(v => v.type === 'downvote').length,
+          showAllReplies: false,
+          replies: postComments.map(comment => {
+            const commentAuthor = usersRes.data.find(u => u.id === comment.userId);
+            return {
+              id: comment.id,
+              author: commentAuthor?.name || 'Unknown User',
+              avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
+              time: new Date(comment.createdAt).toLocaleString('vi-VN', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+              }),
+              content: comment.content
+            };
+          }),
+          tags: post.tags || []
+        };
+      });
+
+      setPosts(postsData);
+      setError(null);
+    } catch (err) {
+      setError("Có lỗi xảy ra khi tải bài viết");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
-  // Xử lý vote down
-  const handleVoteDown = (postId) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId ? { ...post, voteCount: post.voteCount - 1 } : post
-      )
-    );
+
+  const handleVoteUp = async (postId) => {
+    try {
+      await axios.post('http://localhost:3001/votes', {
+        postId,
+        userId: "1", // Using a mock userId for now
+        type: "upvote"
+      });
+      setPosts(prev =>
+        prev.map(post =>
+          post.id === postId ? { ...post, voteCount: post.voteCount + 1 } : post
+        )
+      );
+    } catch (err) {
+      console.error("Error voting up:", err);
+    }
   };
-  // Xử lý xem thêm bình luận
+
+  const handleVoteDown = async (postId) => {
+    try {
+      await axios.post('http://localhost:3001/votes', {
+        postId,
+        userId: "1", // Using a mock userId for now
+        type: "downvote"
+      });
+      setPosts(prev =>
+        prev.map(post =>
+          post.id === postId ? { ...post, voteCount: post.voteCount - 1 } : post
+        )
+      );
+    } catch (err) {
+      console.error("Error voting down:", err);
+    }
+  };
+
   const handleShowAllReplies = (postId) => {
-    setPosts((prev) =>
-      prev.map((post) =>
+    setPosts(prev =>
+      prev.map(post =>
         post.id === postId ? { ...post, showAllReplies: !post.showAllReplies } : post
       )
     );
   };
 
-  // Hàm xử lý đăng bài mới (mock, chỉ đóng modal)
-  const handleNewPost = (data) => {
-    setShowModal(false);
-    // Nếu muốn thêm bài mới vào danh sách, có thể push vào posts ở đây
-  };
+  if (loading) {
+    return <div className="loading">Đang tải...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
-    <div>
+    <>
       <Header />
-      {showModal && (
-        <NewPostModal onClose={() => setShowModal(false)} onSubmit={handleNewPost} />
-      )}
       <div className="forums-container">
         <div className="forums-header-block">
           <h1>
@@ -251,17 +155,14 @@ function ForumsPage() {
                       <span className="forums-post-author">{post.author}</span>
                       <span className="forums-post-dot">•</span>
                       <span className="forums-post-time">{post.time}</span>
-                      <span className="forums-post-dot">•</span>
-                      <a href={post.companyLink} className="forums-post-company">{post.company}</a>
-                      {post.rating && (
-                        <span className="forums-post-rating">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span key={i} className={i < post.rating ? "star filled" : "star"}>★</span>
-                          ))}
-                        </span>
-                      )}
                     </div>
+                    <h3 className="forums-post-title">{post.title}</h3>
                     <div className="forums-post-content">{post.content}</div>
+                    <div className="forums-post-tags">
+                      {post.tags && post.tags.map((tag, index) => (
+                        <span key={index} className="forums-post-tag">#{tag}</span>
+                      ))}
+                    </div>
                     <div className="forums-post-actions">
                       <span className="vote up" onClick={() => handleVoteUp(post.id)}>▲</span>
                       <span className="vote-count">{post.voteCount}</span>
@@ -279,46 +180,36 @@ function ForumsPage() {
                               <span className="forums-reply-author">{reply.author}</span>
                               <span className="forums-reply-dot">•</span>
                               <span className="forums-reply-time">{reply.time}</span>
-                              <span className="forums-reply-content">{reply.content}</span>
+                              <div className="forums-reply-content">{reply.content}</div>
                             </div>
                           </div>
                         ))}
+                        {post.replies.length > 1 && !post.showAllReplies && (
+                          <button 
+                            className="show-more-replies" 
+                            onClick={() => handleShowAllReplies(post.id)}
+                          >
+                            Xem thêm {post.replies.length - 1} bình luận
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
                 </div>
               ))}
             </div>
-            <div className="forums-pagination">
-              <span className="forums-pagination-item active">1</span>
-              <span className="forums-pagination-item">2</span>
-              <span className="forums-pagination-item">3</span>
-              <span className="forums-pagination-item">...</span>
-              <span className="forums-pagination-item">10</span>
-            </div>
           </div>
           <div className="forums-sidebar">
-            <button className="forums-new-post-btn" onClick={() => setShowModal(true)}>Thêm bài viết mới</button>
-            <div className="forums-latest">
-              <h3>Mới nhất</h3>
-              <ul className="forums-latest-list">
-                {mockLatest.map((item) => (
-                  <li key={item.id} className="forums-latest-item">
-                    <a href="#" className="forums-latest-title">{item.title}</a>
-                    <div className="forums-latest-meta">
-                      <a href={item.companyLink} className="forums-latest-company">{item.company}</a>
-                      <span className="forums-latest-dot">•</span>
-                      <span className="forums-latest-time">{item.time}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <a href="#" className="forums-latest-more">Xem thêm bài viết mới &gt;</a>
-            </div>
+            <button className="forums-new-post-btn" onClick={() => setShowModal(true)}>
+              Thêm bài viết mới
+            </button>
           </div>
         </div>
       </div>
-    </div>
+      {showModal && (
+        <NewPostModal onClose={() => setShowModal(false)} onSubmit={() => setShowModal(false)} />
+      )}
+    </>
   );
 }
 
