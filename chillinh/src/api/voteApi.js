@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:3001/votes"; // JSON Server
+import API_BASE_URL from "./config";
+
+const BASE_URL = `${API_BASE_URL}/votes`;
 
 // Lấy vote hiện tại của user cho post
 const getUserVote = async (postId, userId) => {

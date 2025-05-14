@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:3001/companies';
+import axios from "axios";
+import API_BASE_URL from "./config";
+
+const API_URL = `${API_BASE_URL}/companies`;
 
 // 1. Thêm bình luận mới cho công ty
 export async function addCompanyComment(companyId, commentObj) {
@@ -15,11 +18,11 @@ export async function replyToCompanyComment(companyId, reviewId, replyObj) {
   // replyObj: {id, user, content, date}
   const res = await axios.get(`${API_URL}/${companyId}`);
   const company = res.data;
-  const reviews = (company.reviews || []).map(r => {
+  const reviews = (company.reviews || []).map((r) => {
     if (r.id === reviewId) {
       return {
         ...r,
-        replies: [...(r.replies || []), replyObj]
+        replies: [...(r.replies || []), replyObj],
       };
     }
     return r;
