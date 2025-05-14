@@ -28,6 +28,10 @@
     {
       "id": "a648",
       "name": "siuuuu"
+    },
+    {
+      "id": "11c5",
+      "name": "Phú"
     }
   ],
   "companies": [
@@ -124,7 +128,7 @@
           ]
         }
       ],
-      "rating": 4.0,
+      "rating": 4,
       "ratingCount": 121
     }
   ],
