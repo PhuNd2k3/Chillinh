@@ -41,10 +41,6 @@
       "companyId": 1,
       "title": "Trải nghiệm thực tập tại FPT Software",
       "content": "Môi trường làm việc năng động, mentor nhiệt tình.",
-      "comments": [
-        1,
-        2
-      ],
       "upvotes": 10,
       "downvotes": 1,
       "tags": [
@@ -58,7 +54,6 @@
       "companyId": 1,
       "title": "Có nên chọn FPT làm nơi thực tập không?",
       "content": "Mình đang phân vân giữa FPT và Viettel.",
-      "comments": [],
       "upvotes": 4,
       "downvotes": 0,
       "tags": [
@@ -79,6 +74,15 @@
       "postId": 1,
       "userId": 1,
       "content": "Mentor ở đó có hướng dẫn kỹ không bạn?"
+    }
+  ],
+  "postComments": [
+    {
+      "id": "7621",
+      "postId": "1",
+      "userId": "a648",
+      "content": "Test comment qua Postman",
+      "createdAt": "2025-05-16T19:00:00.000Z"
     }
   ],
   "votes": [
