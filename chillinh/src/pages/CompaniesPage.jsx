@@ -189,7 +189,7 @@ const CompaniesPage = () => {
             <div className="filter-options">
               <label><input type="checkbox" name="language" value="Tiếng Anh" /> Tiếng Anh</label>
               <label><input type="checkbox" name="language" value="Tiếng Nhật" /> Tiếng Nhật</label>
-              <label><input type="checkbox" name="language" value="Tiếng Pháp" /> Tiếng Pháp</label>
+              <label><input type="checkbox" name="language" value="Tiếng Hàn" /> Tiếng Hàn</label>
               <label><input type="checkbox" name="language" value="Không yêu cầu" /> Không yêu cầu</label>
             </div>
           </div>
