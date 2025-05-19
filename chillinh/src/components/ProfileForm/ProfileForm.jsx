@@ -10,26 +10,85 @@ import {
 // Predefined options
 const PREDEFINED_OPTIONS = {
   universities: [
-    "Đại học Bách Khoa Hà Nội",
+    "Đại học Bách Khoa",
     "Đại học Kinh tế Quốc dân",
+    "Đại học Ngoại Thương",
+    "Đại học Hà Nội",
+    "Đại học Khoa học tự nhiên",
+    "Đại học Thương Mại",
+    "Đại học Giao thông vận tải",
+    "Đại học Mỹ thuật Công nghiệp",
+    "Đại học Xây dựng",
+    "Đại học Tài nguyên và Môi trường",
+    "Đại học Bách Khoa Hà Nội",
     "Đại học Ngoại thương",
-    "Đại học FPT",
-    "Đại học Công nghệ - ĐHQG Hà Nội",
-    "Đại học Khoa học Tự nhiên - ĐHQG Hà Nội",
-    "Đại học Khoa học Xã hội và Nhân văn - ĐHQG Hà Nội",
-    "Đại học Thương mại",
     "Đại học Sư phạm Hà Nội",
-    "Đại học Y Hà Nội",
-    "Đại học Bách Khoa TP.HCM",
+    "Đại học Ngoại ngữ",
+    "Đại học Giao thông Vận tải TP.HCM",
     "Đại học Kinh tế TP.HCM",
-    "Đại học Công nghệ Thông tin - ĐHQG TP.HCM",
-    "Đại học Khoa học Tự nhiên - ĐHQG TP.HCM",
-    "Đại học Khoa học Xã hội và Nhân văn - ĐHQG TP.HCM",
-    "Đại học Sư phạm TP.HCM",
-    "Đại học Y Dược TP.HCM",
-    "Đại học Cần Thơ",
-    "Đại học Đà Nẵng",
-    "Đại học Huế"
+    "Các trường kỹ thuật",
+    "Đại học Bách Khoa TP.HCM",
+    "Các trường đại học kinh tế và kỹ thuật",
+    "Các trường y tế",
+    "Các trường kỹ thuật, công nghiệp",
+    "Các trường đại học hàng đầu Việt Nam",
+    "Các trường đại học kỹ thuật",
+    "Đại học Khoa học Xã hội & Nhân văn",
+    "Đại học Công nghệ",
+    "Các trường đại học chuyên ngành Tài chính - Kế toán",
+    "Không yêu cầu",
+    "Các trường đào tạo ngành Thiết kế đồ họa",
+    "Các trường đào tạo Tài chính - Kế toán",
+    "Đại học Kinh tế, Công nghệ thông tin",
+    "Học viện Báo chí và Tuyên truyền",
+    "Đại học Công nghiệp Thực phẩm TP.HCM",
+    "Đại học Thương mại",
+    "Cao đẳng Du lịch Hà Nội",
+    "Arena Multimedia",
+    "Đại học Xây Dựng Hà Nội",
+    "Đại học Giao thông Vận tải",
+    "Cao đẳng Kinh tế Kỹ thuật Thương mại",
+    "UEH, FTU, NEU",
+    "ULIS, UEB, FTU",
+    "Đại học Gia Lai",
+    "NEU, Học viện Tài chính, HVNH",
+    "UEH, FTU, IUH",
+    "ĐH Hạ Long, ĐH Thương Mại",
+    "Đại học Công nghệ - ĐHQGHN",
+    "Đại học FPT",
+    "Đại học Bách khoa Hà Nội",
+    "Đại học Ngân hàng TP.HCM",
+    "Đại học Kinh tế - Luật",
+    "Đại học Y Dược Đà Nẵng, Đại học Bách Khoa Đà Nẵng",
+    "Đại học Kinh tế Đà Nẵng, Đại học Ngoại ngữ Đà Nẵng",
+    "Đại học Hàng Hải Việt Nam, Đại học Hải Phòng",
+    "Đại học Kinh tế TP.HCM, Đại học Ngân hàng TP.HCM",
+    "Đại học Kinh tế TP.HCM, Đại học RMIT",
+    "Đại học Nam Định, Đại học Công nghiệp Dệt May",
+    "Đại học Nam Định, Đại học Kinh tế Kỹ thuật Công nghiệp",
+    "Đại học Bách Khoa TP.HCM, Đại học Công nghệ Thông tin",
+    "Đại học Bách Khoa TP.HCM, Đại học Công nghiệp TP.HCM",
+    "Đại học Ngân hàng TP.HCM, Đại học Kinh tế TP.HCM",
+    "Đại học Bách Khoa TP.HCM, Đại học RMIT",
+    "Đại học Khoa học Tự nhiên TP.HCM, Đại học Kinh tế TP.HCM",
+    "Đại học Cần Thơ, Đại học FPT Cần Thơ",
+    "Đại học Cần Thơ, Đại học Kinh tế TP.HCM",
+    "Đại học Kinh tế Quốc dân, Đại học Ngoại thương",
+    "Đại học Kinh tế Quốc dân, Học viện Ngân hàng",
+    "Đại học Huế, Đại học Bách Khoa Đà Nẵng",
+    "Đại học Huế, Đại học Kinh tế Đà Nẵng",
+    "Đại học RMIT, Học viện Báo chí và Tuyên truyền",
+    "Đại học Vinh, Đại học Bách Khoa Đà Nẵng",
+    "Đại học Vinh, Đại học Xây dựng Hà Nội",
+    "Đại học Sư phạm Hà Nội, Đại học Ngoại ngữ - ĐHQGHN",
+    "Đại học Kinh tế Quốc dân, Đại học Thương mại",
+    "Đại học Sư phạm Hà Nội, Đại học Vinh",
+    "Đại học Kinh tế Quốc dân, Học viện Tài chính",
+    "Đại học Kinh tế TP.HCM, Đại học Ngoại thương",
+    "Đại học Bách Khoa TP.HCM, Đại học Giao thông Vận tải",
+    "Đại học Đà Nẵng, Đại học Kinh tế Đà Nẵng",
+    "Đại học Bách Khoa Hà Nội, Đại học Công nghệ - ĐHQGHN",
+    "Học viện Tài chính, Đại học Kinh tế Quốc dân",
   ],
   majors: [
     "Logistics",
@@ -590,17 +649,17 @@ const ProfileForm = () => {
 
       Object.entries(refs).forEach(([field, ref]) => {
         if (ref.current && !ref.current.contains(event.target)) {
-          setSuggestions(prev => ({
+          setSuggestions((prev) => ({
             ...prev,
-            [field]: []
+            [field]: [],
           }));
         }
       });
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -610,7 +669,7 @@ const ProfileForm = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userData = await getUserProfile("user01");
+        const userData = await getUserProfile("007");
         setFormData(userData);
       } catch (error) {
         console.error("Error fetching user data:", error);
