@@ -22,7 +22,7 @@ const HomePage = () => {
       <div className="homepage-content">
         <h1>Không chỉ tìm việc<br />hãy chọn nơi xứng đáng</h1>
         <p>Khám phá những chia sẻ thật từ cộng đồng người đi làm để có lựa chọn đúng đắn</p>
-        <Link to="/users" className="homepage-start-button">Bắt đầu ngay ↗</Link>
+        <Link to="/companies" className="homepage-start-button">Bắt đầu ngay ↗</Link>
       </div>
     </div>
   );
