@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header/Header";
 import "./ForumsPage.css";
 import NewPostModal from "./NewPostModal";
-import axios from 'axios';
+import { fetchPosts, createVote } from "../api/forumApi";
 
 function ForumsPage() {
   const [posts, setPosts] = useState([]);
@@ -17,54 +17,11 @@ function ForumsPage() {
   const loadPosts = async () => {
     try {
       setLoading(true);
-      const [postsRes, usersRes, commentsRes, votesRes] = await Promise.all([
-        axios.get('http://localhost:3001/posts'),
-        axios.get('http://localhost:3001/users'),
-        axios.get('http://localhost:3001/comments'),
-        axios.get('http://localhost:3001/votes')
-      ]);
-
-      const postsData = postsRes.data.map(post => {
-        const author = usersRes.data.find(user => user.id === post.userId);
-        const postComments = commentsRes.data.filter(comment => comment.postId === post.id);
-        const postVotes = votesRes.data.filter(vote => vote.postId === post.id);
-        
-        return {
-          id: post.id,
-          author: author?.name || 'Unknown User',
-          avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
-          time: new Date(post.createdAt).toLocaleString('vi-VN', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
-          }),
-          content: post.content,
-          title: post.title,
-          voteCount: postVotes.filter(v => v.type === 'upvote').length - postVotes.filter(v => v.type === 'downvote').length,
-          showAllReplies: false,
-          replies: postComments.map(comment => {
-            const commentAuthor = usersRes.data.find(u => u.id === comment.userId);
-            return {
-              id: comment.id,
-              author: commentAuthor?.name || 'Unknown User',
-              avatar: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
-              time: new Date(comment.createdAt).toLocaleString('vi-VN', {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric'
-              }),
-              content: comment.content
-            };
-          }),
-          tags: post.tags || []
-        };
-      });
-
-      setPosts(postsData);
+      const postsData = await fetchPosts();
+      setPosts(postsData.map(post => ({
+        ...post,
+        showAllReplies: false
+      })));
       setError(null);
     } catch (err) {
       setError("Có lỗi xảy ra khi tải bài viết");
@@ -76,11 +33,7 @@ function ForumsPage() {
 
   const handleVoteUp = async (postId) => {
     try {
-      await axios.post('http://localhost:3001/votes', {
-        postId,
-        userId: "1", // Using a mock userId for now
-        type: "upvote"
-      });
+      await createVote(postId, "1", "upvote"); // Using a mock userId of "1" for now
       setPosts(prev =>
         prev.map(post =>
           post.id === postId ? { ...post, voteCount: post.voteCount + 1 } : post
@@ -93,11 +46,7 @@ function ForumsPage() {
 
   const handleVoteDown = async (postId) => {
     try {
-      await axios.post('http://localhost:3001/votes', {
-        postId,
-        userId: "1", // Using a mock userId for now
-        type: "downvote"
-      });
+      await createVote(postId, "1", "downvote"); // Using a mock userId of "1" for now
       setPosts(prev =>
         prev.map(post =>
           post.id === postId ? { ...post, voteCount: post.voteCount - 1 } : post

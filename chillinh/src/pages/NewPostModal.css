@@ -1,76 +1,69 @@
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.18);
-  z-index: 2000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
 
 .modal-box {
-  background: #fff;
+  background: white;
+  padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.13);
-  padding: 28px 24px 20px 24px;
-  min-width: 340px;
-  max-width: 95vw;
-  width: 400px;
+  width: 90%;
+  max-width: 600px;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-close {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  right: 1rem;
+  top: 1rem;
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #888;
   cursor: pointer;
+  color: #666;
 }
 
 .modal-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 18px;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
 }
 
-.modal-input {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 12px;
-  font-size: 1rem;
-}
-
-.modal-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 12px;
-  font-size: 1rem;
-  resize: vertical;
-}
-
+.modal-input,
+.modal-textarea,
 .modal-select {
   width: 100%;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 18px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 1rem;
+}
+
+.modal-input:focus,
+.modal-textarea:focus,
+.modal-select:focus {
+  outline: none;
+  border-color: #3366FF;
 }
 
 .modal-submit {
   width: 100%;
+  padding: 0.8rem;
   background: #3366FF;
-  color: #fff;
+  color: white;
   border: none;
-  border-radius: 6px;
-  padding: 10px 0;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -79,4 +72,75 @@
 
 .modal-submit:hover {
   background: #2952cc;
+}
+
+.modal-tags {
+  margin-bottom: 1rem;
+}
+
+.tag-input-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tag-input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.add-tag-btn {
+  padding: 0 1rem;
+  background: #f0f2f5;
+  border: none;
+  border-radius: 8px;
+  color: #2d6cdf;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-tag-btn:hover {
+  background: #e4e6eb;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  background: #f0f2f5;
+  color: #2d6cdf;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.remove-tag {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.remove-tag:hover {
+  background: rgba(0, 0, 0, 0.1);
 } 

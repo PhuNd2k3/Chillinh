@@ -165,6 +165,20 @@
         "Viettel"
       ],
       "createdAt": "2024-03-16T10:15:00Z"
+    },
+    {
+      "id": "7898",
+      "title": "Thắc mắc về công ty MISA",
+      "content": "Trải nghiệm thực tập của mọi người ở đây có ok không ạ ? có bị ép làm OT không ạ ?",
+      "companyId": "3",
+      "tags": [
+        "MISA",
+        "thực tập"
+      ],
+      "userId": "1",
+      "upvotes": 0,
+      "downvotes": 0,
+      "createdAt": "2025-05-14T10:27:08.643Z"
     }
   ],
   "comments": [
@@ -219,6 +233,13 @@
       "postId": "1",
       "userId": "1",
       "type": "downvote"
+    },
+    {
+      "id": "5969",
+      "postId": "1",
+      "userId": "1",
+      "type": "upvote",
+      "createdAt": "2025-05-14T10:09:30.329Z"
     }
   ]
 }
