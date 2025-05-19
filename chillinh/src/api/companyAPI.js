@@ -1,10 +1,11 @@
 import axios from 'axios';
+import API_BASE_URL from "./config";
 
-const API_URL = 'http://localhost:3000';
 
 export const getAllCompanies = async (page = 1, limit = 10) => {
   try {
-    const response = await axios.get(`${API_URL}/companies`, {
+    console.log("Calling API_BASE_URL/companies", API_BASE_URL);
+    const response = await axios.get(`${API_BASE_URL}/companies`, {
       params: {
         _page: page,
         _limit: limit,
@@ -26,7 +27,7 @@ export const getAllCompanies = async (page = 1, limit = 10) => {
 
 export const getMatchCompanies = async (userId = '007') => {
   try {
-    const response = await axios.get(`${API_URL}/match-companies/${userId}`);
+    const response = await axios.get(`${API_BASE_URL}/match-companies/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching matched companies:', error);
