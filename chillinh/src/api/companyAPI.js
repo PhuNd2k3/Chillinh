@@ -4,7 +4,6 @@ import API_BASE_URL from "./config";
 
 export const getAllCompanies = async (page = 1, limit = 10) => {
   try {
-    console.log("Calling API_BASE_URL/companies", API_BASE_URL);
     const response = await axios.get(`${API_BASE_URL}/companies`, {
       params: {
         _page: page,

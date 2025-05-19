@@ -18,6 +18,7 @@ export async function getUserProfile(userId) {
 export async function updateUserProfile(userId, profileData) {
     try {
         const response = await axios.put(`${API_URL}/${userId}`, profileData);
+        console.log('profileData gửi lên:', profileData);
         return response.data;
     } catch (error) {
         console.error("Error updating user profile:", error);
