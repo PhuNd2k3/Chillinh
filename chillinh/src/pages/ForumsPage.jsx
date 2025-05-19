@@ -2,13 +2,17 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header/Header";
 import "./ForumsPage.css";
 import NewPostModal from "./NewPostModal";
-import { fetchPosts, createVote } from "../api/forumApi";
+import { fetchPosts, createVote, fetchComments, createPostComment } from "../api/forumApi";
 
 function ForumsPage() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [comments, setComments] = useState({}); // { [postId]: [comment, ...] }
+  const [loadingComments, setLoadingComments] = useState({}); // { [postId]: boolean }
+  const [commentInputs, setCommentInputs] = useState({}); // { [postId]: string }
+  const [sendingComment, setSendingComment] = useState({}); // { [postId]: boolean }
 
   useEffect(() => {
     loadPosts();
@@ -57,12 +61,45 @@ function ForumsPage() {
     }
   };
 
-  const handleShowAllReplies = (postId) => {
+  const handleShowAllReplies = async (postId) => {
     setPosts(prev =>
       prev.map(post =>
         post.id === postId ? { ...post, showAllReplies: !post.showAllReplies } : post
       )
     );
+    // Nếu chưa có comment thì mới fetch
+    if (!comments[postId]) {
+      setLoadingComments(prev => ({ ...prev, [postId]: true }));
+      try {
+        const fetched = await fetchComments(postId);
+        setComments(prev => ({ ...prev, [postId]: fetched }));
+      } catch (err) {
+        // Có thể xử lý lỗi nếu muốn
+      } finally {
+        setLoadingComments(prev => ({ ...prev, [postId]: false }));
+      }
+    }
+  };
+
+  const handleCommentInputChange = (postId, value) => {
+    setCommentInputs(prev => ({ ...prev, [postId]: value }));
+  };
+
+  const handleSendComment = async (postId) => {
+    const content = (commentInputs[postId] || '').trim();
+    if (!content) return;
+    setSendingComment(prev => ({ ...prev, [postId]: true }));
+    try {
+      await createPostComment(postId, "siuuu", content); // userId có thể lấy từ context/auth nếu có
+      setCommentInputs(prev => ({ ...prev, [postId]: '' }));
+      // Reload lại comment
+      const fetched = await fetchComments(postId);
+      setComments(prev => ({ ...prev, [postId]: fetched }));
+    } catch (err) {
+      // Có thể xử lý lỗi nếu muốn
+    } finally {
+      setSendingComment(prev => ({ ...prev, [postId]: false }));
+    }
   };
 
   if (loading) {
@@ -117,30 +154,46 @@ function ForumsPage() {
                       <span className="vote-count">{post.voteCount}</span>
                       <span className="vote down" onClick={() => handleVoteDown(post.id)}>▼</span>
                       <span className="comment-count" onClick={() => handleShowAllReplies(post.id)} style={{cursor:'pointer', color:'#2d6cdf', fontWeight:600}}>
-                        {post.replies.length} bình luận
+                        {(comments[post.id] ? comments[post.id].length : post.commentCount)} bình luận
                       </span>
                     </div>
-                    {post.replies && post.replies.length > 0 && (
+                    {post.showAllReplies && (
                       <div className="forums-post-replies">
-                        {(post.showAllReplies ? post.replies : post.replies.slice(0, 1)).map((reply) => (
-                          <div className="forums-reply" key={reply.id}>
-                            <img src={reply.avatar} alt={reply.author} className="forums-reply-avatar" />
-                            <div className="forums-reply-body">
-                              <span className="forums-reply-author">{reply.author}</span>
-                              <span className="forums-reply-dot">•</span>
-                              <span className="forums-reply-time">{reply.time}</span>
-                              <div className="forums-reply-content">{reply.content}</div>
-                            </div>
-                          </div>
-                        ))}
-                        {post.replies.length > 1 && !post.showAllReplies && (
-                          <button 
-                            className="show-more-replies" 
-                            onClick={() => handleShowAllReplies(post.id)}
-                          >
-                            Xem thêm {post.replies.length - 1} bình luận
-                          </button>
+                        {loadingComments[post.id] ? (
+                          <div>Đang tải bình luận...</div>
+                        ) : (
+                          (comments[post.id]?.length > 0 ?
+                            (comments[post.id].map((reply, idx) => (
+                              <div className="forums-reply" key={reply.id || idx}>
+                                <img src={reply.avatar} alt={reply.author} className="forums-reply-avatar" />
+                                <div className="forums-reply-body">
+                                  <span className="forums-reply-author">{reply.author}</span>
+                                  <span className="forums-reply-dot">•</span>
+                                  <span className="forums-reply-time">{reply.time}</span>
+                                  <div className="forums-reply-content">{reply.content}</div>
+                                </div>
+                              </div>
+                            ))) : <div>Chưa có bình luận nào.</div>)
                         )}
+                        {/* Form nhập comment */}
+                        <div className="forums-comment-form" style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                          <input
+                            type="text"
+                            placeholder="Nhập bình luận..."
+                            value={commentInputs[post.id] || ''}
+                            onChange={e => handleCommentInputChange(post.id, e.target.value)}
+                            style={{ flex: 1, padding: 6, borderRadius: 4, border: '1px solid #ccc' }}
+                            onKeyDown={e => { if (e.key === 'Enter') handleSendComment(post.id); }}
+                            disabled={sendingComment[post.id]}
+                          />
+                          <button
+                            onClick={() => handleSendComment(post.id)}
+                            disabled={sendingComment[post.id] || !(commentInputs[post.id] || '').trim()}
+                            style={{ padding: '6px 12px', borderRadius: 4, background: '#2d6cdf', color: '#fff', border: 'none', fontWeight: 600 }}
+                          >
+                            Gửi
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>

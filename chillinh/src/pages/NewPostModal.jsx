@@ -1,35 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./NewPostModal.css";
 import axios from "axios";
-import API_BASE_URL from "../api/config";
 import { createPost } from "../api/forumApi";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 function NewPostModal({ onClose, onSubmit }) {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    companyId: "",
     tags: []
   });
-  const [companies, setCompanies] = useState([]);
   const [tagInput, setTagInput] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchCompanies();
+    setLoading(false);
   }, []);
-
-  const fetchCompanies = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/companies`);
-      setCompanies(response.data);
-      setLoading(false);
-    } catch (err) {
-      setError("Không thể tải danh sách công ty");
-      setLoading(false);
-    }
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +54,6 @@ function NewPostModal({ onClose, onSubmit }) {
         setFormData({
           title: "",
           content: "",
-          companyId: "",
           tags: []
         });
       } catch (err) {
@@ -102,20 +89,6 @@ function NewPostModal({ onClose, onSubmit }) {
             rows={7}
             required
           />
-          <select
-            className="modal-select"
-            name="companyId"
-            value={formData.companyId}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="" disabled>Chọn công ty</option>
-            {companies.map((company) => (
-              <option key={company.id} value={company.id}>
-                {company.name}
-              </option>
-            ))}
-          </select>
           <div className="modal-tags">
             <div className="tag-input-container">
               <input
