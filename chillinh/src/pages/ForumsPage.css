@@ -331,6 +331,28 @@
   text-decoration: underline;
 }
 
+.forums-post-tags {
+  margin: 8px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.forums-post-tag {
+  background-color: #f0f2f5;
+  color: #2d6cdf;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.forums-post-tag:hover {
+  background-color: #e4e6eb;
+}
+
 @media (max-width: 900px) {
   .forums-content {
     flex-direction: column;
