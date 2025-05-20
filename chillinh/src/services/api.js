@@ -1,14 +1,13 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:3001';
+import API_BASE_URL from '../api/config';
 
 export const fetchPosts = async () => {
   try {
     const [postsRes, usersRes, commentsRes, votesRes] = await Promise.all([
-      axios.get(`${API_URL}/posts`),
-      axios.get(`${API_URL}/users`),
-      axios.get(`${API_URL}/comments`),
-      axios.get(`${API_URL}/votes`)
+      axios.get(`${API_BASE_URL}/posts`),
+      axios.get(`${API_BASE_URL}/users`),
+      axios.get(`${API_BASE_URL}/comments`),
+      axios.get(`${API_BASE_URL}/votes`)
     ]);
 
     // Transform the data to match our component's expected format
@@ -55,7 +54,7 @@ export const fetchPosts = async () => {
 
 export const createVote = async (postId, userId, type) => {
   try {
-    const response = await axios.post(`${API_URL}/votes`, {
+    const response = await axios.post(`${API_BASE_URL}/votes`, {
       postId,
       userId,
       type
@@ -69,7 +68,7 @@ export const createVote = async (postId, userId, type) => {
 
 export const createComment = async (postId, userId, content) => {
   try {
-    const response = await axios.post(`${API_URL}/comments`, {
+    const response = await axios.post(`${API_BASE_URL}/comments`, {
       postId,
       userId,
       content,

@@ -205,6 +205,51 @@ function ForumsPage() {
             <button className="forums-new-post-btn" onClick={() => setShowModal(true)}>
               Thêm bài viết mới
             </button>
+            
+            {/* Danh sách tiêu đề bài viết mới */}
+            <div className="recent-posts-section" style={{ 
+              marginTop: 24, 
+              padding: 15, 
+              backgroundColor: '#f8f9fa',
+              borderRadius: 8
+            }}>
+              <h3 style={{ 
+                fontSize: 18, 
+                marginBottom: 16, 
+                color: '#333', 
+                fontWeight: 700,
+                borderBottom: '2px solid #2d6cdf',
+                paddingBottom: 8
+              }}>Bài viết gần đây</h3>
+              <div className="recent-posts-list">
+                {posts.slice(0, 5).map(post => (
+                  <div key={post.id} className="recent-post-item" style={{ 
+                    padding: '12px 0',
+                    borderBottom: '1px solid #eee',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    ':hover': {
+                      backgroundColor: '#f0f4ff'
+                    }
+                  }}>
+                    <div className="recent-post-title" style={{ 
+                      fontSize: 15,
+                      fontWeight: 600,
+                      marginBottom: 6,
+                      color: '#2d6cdf',
+                      transition: 'color 0.2s ease'
+                    }}>
+                      {post.title}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', fontSize: 13, color: '#666' }}>
+                      <span style={{ fontWeight: 500 }}>{post.author}</span>
+                      <span style={{ margin: '0 6px' }}>•</span>
+                      <span>{post.commentCount || 0} bình luận</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
