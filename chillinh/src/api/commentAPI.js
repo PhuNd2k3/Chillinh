@@ -3,7 +3,7 @@ import API_BASE_URL from "./config";
 
 const API_URL = `${API_BASE_URL}/companies`;
 
-// 1. Get reviews for a company
+// 1. Lấy bình luận của công ty
 export async function getCompanyReviews(companyId) {
   try {
     const response = await axios.get(`${API_URL}/${companyId}/reviews`);
