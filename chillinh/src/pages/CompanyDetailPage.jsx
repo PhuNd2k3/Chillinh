@@ -5,12 +5,21 @@ import "./CompanyDetailPage.css";
 import Header from "../components/Header/Header";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { addCompanyComment, replyToCompanyComment } from "./../api/commentAPI";
+import { addCompanyComment, getCompanyReviews, replyToCompanyComment, voteForReview } from "./../api/commentAPI";
 import {
   MdLocationOn,
   MdAccessTime,
   MdAttachMoney,
   MdCalendarToday,
+  MdPeople,
+  MdWork,
+  MdLanguage,
+  MdSchool,
+  MdOutlineSchedule,
+  MdAdd,
+  MdArrowDropUp,
+  MdArrowDropDown,
+  MdOutlineMessage
 } from "react-icons/md";
 dayjs.extend(relativeTime);
 import API_BASE_URL from "./../api/config";
@@ -35,19 +44,24 @@ function timeAgo(date) {
 function CompanyDetailPage() {
   const { id } = useParams();
   const [company, setCompany] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(5);
   const [loading, setLoading] = useState(true);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [replyBox, setReplyBox] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
+  const [avgRating, setAvgRating] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
 
   useEffect(() => {
     axios
       .get(`${API_URL}/${id}`)
-
       .then((res) => {
         setCompany(res.data);
         setLoading(false);
+        loadReviews();
       })
       .catch((err) => {
         setError("Không tìm thấy công ty");
@@ -55,20 +69,34 @@ function CompanyDetailPage() {
       });
   }, [id]);
 
+  const loadReviews = async () => {
+    try {
+      setReviewsLoading(true);
+      const response = await getCompanyReviews(id);
+      setReviews(response.data || []);
+      setAvgRating(response.avgRating || 0);
+      setRatingCount(response.ratingCount || 0);
+      setReviewsLoading(false);
+    } catch (error) {
+      console.error("Failed to load reviews:", error);
+      setReviewsLoading(false);
+    }
+  };
+
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!comment.trim()) return;
     const newReview = {
       id: `review${Date.now()}`,
       user: "Bạn",
-      rating: 5,
+      rating: rating,
       content: comment,
       date: new Date().toISOString(),
       replies: [],
     };
-    const reviews = await addCompanyComment(id, newReview);
-    setCompany({ ...company, reviews });
+    await addCompanyComment(id, newReview);
     setComment("");
+    loadReviews(); // Reload reviews to show the new one
   };
 
   const handleReplyChange = (reviewId, value) => {
@@ -83,10 +111,10 @@ function CompanyDetailPage() {
       content: replyBox[reviewId],
       date: new Date().toISOString(),
     };
-    const reviews = await replyToCompanyComment(id, reviewId, replyObj);
-    setCompany({ ...company, reviews });
+    await replyToCompanyComment(id, reviewId, replyObj);
     setReplyBox((prev) => ({ ...prev, [reviewId]: "" }));
     setReplyingTo(null);
+    loadReviews(); // Reload to show the new reply
   };
 
   const handleReplyClick = (reviewId, replyUser, replyId) => {
@@ -95,6 +123,40 @@ function CompanyDetailPage() {
       ...prev,
       [reviewId]: replyUser ? `@${replyUser} ` : "",
     }));
+  };
+
+  const handleVote = async (reviewId, voteType) => {
+    try {
+      await voteForReview(id, reviewId, voteType);
+      // Optimistically update UI without reloading
+      setReviews(prevReviews => 
+        prevReviews.map(review => {
+          if (review.id === reviewId) {
+            const votes = {...review.votes};
+            if (voteType === 'upvote') {
+              votes.upvotes += 1;
+              votes.total += 1;
+            } else {
+              votes.downvotes += 1;
+              votes.total -= 1;
+            }
+            return {...review, votes};
+          }
+          return review;
+        })
+      );
+    } catch (error) {
+      console.error(`Error ${voteType} review:`, error);
+    }
+  };
+
+  const renderCompanyLogo = () => {
+    // For demo purposes, could be replaced with actual logo from company data
+    return "/pictures/misa.png";
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
   };
 
   if (loading) return <div>Đang tải...</div>;
@@ -106,7 +168,7 @@ function CompanyDetailPage() {
       <Header />
       <div className="bg"></div>
       <div className="companyCard">
-        <img className="companyLogo" src={"/pictures/misa.png"} alt="logo" />
+        <img className="companyLogo" src={renderCompanyLogo()} alt="logo" />
         <div className="companyMainInfo">
           <div className="companyName">{company.name}</div>
           <div className="companyDesc">{company.description}</div>
@@ -143,17 +205,20 @@ function CompanyDetailPage() {
             </div>
           </div>
         </div>
-        <button className="followBtn">+ Theo dõi công ty</button>
+        <button className="followBtn">
+          <MdAdd /> Theo dõi công ty
+        </button>
       </div>
       <div className="container">
         <div className="sectionTitle">Giới thiệu</div>
         <div>{company.about}</div>
-        <div className="sectionTitle">Công việc</div>
-        {company.jobs &&
-          company.jobs.map((job) => (
+        
+        <div className="sectionTitle">Vị trí đang tuyển</div>
+        {company.recruitment && company.recruitment.is_hiring && company.recruitment.jobs && company.recruitment.jobs.length > 0 ? (
+          company.recruitment.jobs.map((job) => (
             <div key={job.id} className="jobCard">
               <div className="jobLogoWrap">
-                <img className="jobLogo" src="/pictures/misa.png" alt="logo" />
+                <img className="jobLogo" src={renderCompanyLogo()} alt="logo" />
               </div>
               <div className="jobInfo">
                 <div className="jobCompany">{company.name}</div>
@@ -173,7 +238,7 @@ function CompanyDetailPage() {
                     <span className="jobMetaIcon">
                       <MdAccessTime />
                     </span>
-                    {job.type}
+                    {job.working_type}
                   </span>
                   <span className="jobMetaDot">·</span>
                   <span>
@@ -187,21 +252,102 @@ function CompanyDetailPage() {
                     <span className="jobMetaIcon">
                       <MdCalendarToday />
                     </span>
-                    {timeAgo(job.posted)}
+                    {job.posted_time}
                   </span>
                 </div>
                 <div className="jobDesc">{job.description}</div>
+
+                {/* Additional job details */}
+                <div className="jobDetailSection">
+                  <div className="jobDetailItem">
+                    <span className="jobDetailIcon"><MdWork /></span>
+                    <span className="jobDetailLabel">Kỹ năng chuyên môn:</span>
+                    <span className="jobDetailValue">{job.technical_skills?.join(", ")}</span>
+                  </div>
+                  <div className="jobDetailItem">
+                    <span className="jobDetailIcon"><MdPeople /></span>
+                    <span className="jobDetailLabel">Kỹ năng mềm:</span>
+                    <span className="jobDetailValue">{job.soft_skills?.join(", ")}</span>
+                  </div>
+                  <div className="jobDetailItem">
+                    <span className="jobDetailIcon"><MdLanguage /></span>
+                    <span className="jobDetailLabel">Yêu cầu ngôn ngữ:</span>
+                    <span className="jobDetailValue">{job.language_requirement}</span>
+                  </div>
+                  <div className="jobDetailItem">
+                    <span className="jobDetailIcon"><MdSchool /></span>
+                    <span className="jobDetailLabel">Trường đại học:</span>
+                    <span className="jobDetailValue">{job.student_target?.university}</span>
+                  </div>
+                  <div className="jobDetailItem">
+                    <span className="jobDetailIcon"><MdOutlineSchedule /></span>
+                    <span className="jobDetailLabel">Thời gian làm việc:</span>
+                    <span className="jobDetailValue">{job.working_hours_per_week}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          company.jobs && company.jobs.length > 0 ? (
+            company.jobs.map((job) => (
+              <div key={job.id} className="jobCard">
+                <div className="jobLogoWrap">
+                  <img className="jobLogo" src={renderCompanyLogo()} alt="logo" />
+                </div>
+                <div className="jobInfo">
+                  <div className="jobCompany">{company.name}</div>
+                  <div className="jobTitleRow">
+                    <span className="jobTitle">{job.title}</span>
+                    <span className="badgeNew">Mới</span>
+                  </div>
+                  <div className="jobMeta">
+                    <span>
+                      <span className="jobMetaIcon">
+                        <MdLocationOn />
+                      </span>
+                      {job.location}
+                    </span>
+                    <span className="jobMetaDot">·</span>
+                    <span>
+                      <span className="jobMetaIcon">
+                        <MdAccessTime />
+                      </span>
+                      {job.type}
+                    </span>
+                    <span className="jobMetaDot">·</span>
+                    <span>
+                      <span className="jobMetaIcon">
+                        <MdAttachMoney />
+                      </span>
+                      {job.salary}
+                    </span>
+                    <span className="jobMetaDot">·</span>
+                    <span>
+                      <span className="jobMetaIcon">
+                        <MdCalendarToday />
+                      </span>
+                      {timeAgo(job.posted)}
+                    </span>
+                  </div>
+                  <div className="jobDesc">{job.description}</div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="noJobs">Công ty hiện không có vị trí tuyển dụng nào</div>
+          )
+        )}
+
         <div className="sectionTitle">Đánh giá</div>
         <div className="reviewHeaderBar">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span className="reviewScore">{company.rating}</span>
-            <span className="reviewStars">
-              {"★".repeat(Math.round(company.rating))}
-              {"☆".repeat(5 - Math.round(company.rating))}
-            </span>
+            <span className="reviewScore">{avgRating.toFixed(1)}</span>
+            <div className="starRating">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span key={star} className={star <= Math.round(avgRating) ? "star filled" : "star"}>★</span>
+              ))}
+            </div>
           </div>
           <div className="reviewFilterBar">
             <button className="reviewFilterBtn selected">
@@ -213,236 +359,162 @@ function CompanyDetailPage() {
             <button className="reviewFilterBtn">2 sao</button>
             <button className="reviewFilterBtn">1 sao</button>
           </div>
-          <div
-            style={{ fontStyle: "italic", color: "#222", fontSize: "1.05rem" }}
-          >
-            Dựa trên {company.ratingCount} đánh giá
+          <div className="ratingCountText">
+            Dựa trên {ratingCount} đánh giá
           </div>
         </div>
-        <form
-          onSubmit={handleCommentSubmit}
-          className="form"
-          style={{ marginBottom: 24 }}
-        >
-          <h4>Viết đánh giá</h4>
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            rows={3}
-            className="textarea"
-            placeholder="Nhập đánh giá..."
-          />
-          <button type="submit" className="button">
-            Đăng
-          </button>
-        </form>
-        {company.reviews &&
-          company.reviews.map((review) => (
-            <div key={review.id} className="reviewCard">
-              <div className="reviewAvatar">
-                {review.avatar ? (
-                  <img
-                    src={review.avatar}
-                    alt="avatar"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: "50%",
-                    }}
-                  />
-                ) : (
-                  review.user[0]
-                )}
-              </div>
-              <div className="reviewMain">
-                <div className="reviewUserRow">
-                  <span className="reviewUserName">{review.user}</span>
-                  <span className="reviewStarsRow">
-                    {"★".repeat(review.rating)}
-                    {"☆".repeat(5 - review.rating)}
-                  </span>
-                  <span className="reviewTime">{timeAgo(review.date)}</span>
+
+        <div className="reviewForm">
+          <h3>Viết đánh giá</h3>
+          <div className="reviewStarPicker">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                className={star <= rating ? "reviewStar active" : "reviewStar"}
+                onClick={() => handleRatingChange(star)}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <form onSubmit={handleCommentSubmit}>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Nhập đánh giá..."
+              className="reviewTextarea"
+              rows={6}
+            />
+            <div className="reviewFormFooter">
+              <button type="submit" className="reviewSubmitBtn">
+                Đăng
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div className="reviewsSection">
+          {reviewsLoading ? (
+            <div className="loadingReviews">Đang tải đánh giá...</div>
+          ) : reviews.length === 0 ? (
+            <div className="noReviews">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá!</div>
+          ) : (
+            reviews.map((review) => (
+              <div key={review.id} className="reviewItem">
+                <div className="reviewHeader">
+                  <div className="reviewUser">
+                    <img 
+                      src={review.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.user)}&background=random`} 
+                      alt={review.user} 
+                      className="reviewAvatar" 
+                    />
+                    <div className="reviewUserInfo">
+                      <div className="reviewUserName">
+                        {review.user}
+                        {review.isCompanyMember && <span className="companyBadge">Công ty</span>}
+                      </div>
+                      <div className="reviewStars">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span key={star} className={star <= review.rating ? "reviewStar active" : "reviewStar"}>
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="reviewTime">{timeAgo(review.date)}</div>
                 </div>
+
+                {review.company && (
+                  <div className="reviewCompanyTag">
+                    <a href={`/companies/${id}`}>@{review.company}</a>
+                  </div>
+                )}
+
                 <div className="reviewContent">{review.content}</div>
-                {review.replies && review.replies.length > 0 && (
-                  <div className="reviewReplyList">
+
+                <div className="reviewActions">
+                  <div className="voteButtons">
+                    <div className="voteBtn upvote" onClick={() => handleVote(review.id, 'upvote')}>
+                      <MdArrowDropUp className="voteIcon" />
+                    </div>
+                    <div className="voteCount">{review.votes?.total || 0}</div>
+                    <div className="voteBtn downvote" onClick={() => handleVote(review.id, 'downvote')}>
+                      <MdArrowDropDown className="voteIcon" />
+                    </div>
+                  </div>
+                  
+                  <button 
+                    className="replyButton"
+                    onClick={() => handleReplyClick(review.id, null, null)}
+                  >
+                    <MdOutlineMessage className="replyIcon" /> Trả lời
+                  </button>
+                </div>
+
+                {(review.replies && review.replies.length > 0) && (
+                  <div className="reviewReplies">
                     {review.replies.map((reply) => (
-                      <div key={reply.id} className="reviewReplyCard">
-                        <div className="reviewReplyAvatar">
-                          {reply.avatar ? (
-                            <img
-                              src={reply.avatar}
-                              alt="avatar"
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                borderRadius: "50%",
-                              }}
+                      <div key={reply.id} className="reviewReply">
+                        <div className="replyHeader">
+                          <div className="reviewUser">
+                            <img 
+                              src={reply.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.user)}&background=random`} 
+                              alt={reply.user} 
+                              className="replyAvatar" 
                             />
-                          ) : (
-                            reply.user[0]
-                          )}
-                        </div>
-                        <div className="reviewReplyMain">
-                          <div className="reviewReplyUserRow">
-                            <span className="reviewReplyUserName">
-                              {reply.user}
-                            </span>
-                            <span className="reviewReplyTime">
-                              {timeAgo(reply.date)}
-                            </span>
-                          </div>
-                          <div className="reviewReplyContent">
-                            {reply.content}
-                          </div>
-                          <div style={{ marginTop: 6 }}>
-                            {replyingTo &&
-                            replyingTo.reviewId === review.id &&
-                            replyingTo.replyId === reply.id ? (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: 8,
-                                  alignItems: "center",
-                                }}
-                              >
-                                <input
-                                  type="text"
-                                  value={replyBox[review.id] || ""}
-                                  onChange={(e) =>
-                                    handleReplyChange(review.id, e.target.value)
-                                  }
-                                  placeholder={`Trả lời @${reply.user}...`}
-                                  style={{
-                                    flex: 1,
-                                    padding: "7px 12px",
-                                    borderRadius: 6,
-                                    border: "1.2px solid #cfd8dc",
-                                    fontSize: "1rem",
-                                  }}
-                                />
-                                <button
-                                  onClick={() => handleReplySubmit(review.id)}
-                                  style={{
-                                    background: "#1976d2",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: 6,
-                                    padding: "7px 18px",
-                                    fontWeight: 600,
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Gửi
-                                </button>
-                                <button
-                                  onClick={() => setReplyingTo(null)}
-                                  style={{
-                                    background: "none",
-                                    color: "#888",
-                                    border: "none",
-                                    fontWeight: 500,
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Huỷ
-                                </button>
+                            <div className="reviewUserInfo">
+                              <div className="replyUserName">
+                                {reply.user}
+                                {reply.location && <span className="replyLocation">{reply.location}</span>}
                               </div>
-                            ) : (
-                              <button
-                                onClick={() =>
-                                  handleReplyClick(
-                                    review.id,
-                                    reply.user,
-                                    reply.id
-                                  )
-                                }
-                                style={{
-                                  background: "none",
-                                  color: "#1976d2",
-                                  border: "none",
-                                  fontWeight: 500,
-                                  cursor: "pointer",
-                                  marginTop: 2,
-                                }}
-                              >
-                                Trả lời
-                              </button>
-                            )}
+                            </div>
                           </div>
+                          <div className="replyTime">{timeAgo(reply.date)}</div>
+                        </div>
+                        <div className="replyContent">{reply.content}</div>
+                        
+                        <div className="replyActions">
+                          <button 
+                            className="replyButton"
+                            onClick={() => handleReplyClick(review.id, reply.user, reply.id)}
+                          >
+                            <MdOutlineMessage className="replyIcon" /> Trả lời
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-                <div style={{ marginTop: 10 }}>
-                  {replyingTo &&
-                  replyingTo.reviewId === review.id &&
-                  !replyingTo.replyId ? (
-                    <div
-                      style={{ display: "flex", gap: 8, alignItems: "center" }}
-                    >
-                      <input
-                        type="text"
-                        value={replyBox[review.id] || ""}
-                        onChange={(e) =>
-                          handleReplyChange(review.id, e.target.value)
-                        }
-                        placeholder="Nhập trả lời..."
-                        style={{
-                          flex: 1,
-                          padding: "7px 12px",
-                          borderRadius: 6,
-                          border: "1.2px solid #cfd8dc",
-                          fontSize: "1rem",
-                        }}
-                      />
-                      <button
-                        onClick={() => handleReplySubmit(review.id)}
-                        style={{
-                          background: "#1976d2",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: 6,
-                          padding: "7px 18px",
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        Gửi
-                      </button>
-                      <button
+
+                {replyingTo && replyingTo.reviewId === review.id && (
+                  <div className="replyForm">
+                    <textarea
+                      value={replyBox[review.id] || ""}
+                      onChange={(e) => handleReplyChange(review.id, e.target.value)}
+                      placeholder={replyingTo.replyId ? `Trả lời...` : "Viết trả lời..."}
+                      className="replyTextarea"
+                    />
+                    <div className="replyFormActions">
+                      <button 
+                        className="cancelReplyBtn"
                         onClick={() => setReplyingTo(null)}
-                        style={{
-                          background: "none",
-                          color: "#888",
-                          border: "none",
-                          fontWeight: 500,
-                          cursor: "pointer",
-                        }}
                       >
                         Huỷ
                       </button>
+                      <button 
+                        className="submitReplyBtn"
+                        onClick={() => handleReplySubmit(review.id)}
+                      >
+                        Gửi
+                      </button>
                     </div>
-                  ) : (
-                    <button
-                      onClick={() => handleReplyClick(review.id, null, null)}
-                      style={{
-                        background: "none",
-                        color: "#1976d2",
-                        border: "none",
-                        fontWeight: 500,
-                        cursor: "pointer",
-                        marginTop: 2,
-                      }}
-                    >
-                      Trả lời
-                    </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            ))
+          )}
+        </div>
       </div>
     </>
   );

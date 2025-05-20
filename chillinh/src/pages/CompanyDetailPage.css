@@ -10,45 +10,62 @@
   max-width: 1100px;
   margin: -100px auto 32px auto;
   background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
-  padding: 36px 32px 28px 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 32px;
   display: flex;
-  align-items: center;
-  gap: 32px;
+  align-items: flex-start;
+  gap: 24px;
   position: relative;
   z-index: 2;
 }
 .companyLogo {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
   object-fit: contain;
-  background: #f5f5f5;
+  background: #fff;
   flex-shrink: 0;
+  border: 1px solid #f0f0f0;
 }
 .companyMainInfo {
   flex: 1;
 }
 .companyName {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 4px;
+  color: #111827;
 }
 .companyDesc {
-  color: #555;
-  margin-bottom: 12px;
-  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 .companyMetaRow {
-  display: flex;
-  gap: 48px;
-  margin-top: 16px;
-  font-size: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+  font-size: 0.95rem;
 }
 .companyMetaCol {
   flex: 1;
-  color: #666;
+}
+.companyMetaCol div:first-child {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #111827;
+}
+.companyMetaCol div:last-child,
+.companyMetaCol a {
+  color: #4b5563;
+  text-decoration: none;
+}
+.companyMetaCol a:hover {
+  color: #2563eb;
+  text-decoration: underline;
 }
 .followBtn {
   background: #2563eb;
@@ -56,22 +73,22 @@
   border: none;
   border-radius: 8px;
   padding: 10px 24px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   margin-left: auto;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .followBtn:hover {
-  background: #174ea6;
+  background: #1d4ed8;
 }
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 16px 32px 16px;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
 }
 .header {
   display: flex;
@@ -88,268 +105,465 @@
   margin-bottom: 2px;
 }
 .sectionTitle {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin: 32px 0 16px 0;
+  color: #111827;
 }
 .jobCard {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 28px 32px 20px 32px;
-  margin-bottom: 24px;
-  gap: 28px;
-  border: 1.5px solid #f2f2f2;
-  min-height: 120px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 24px;
+  margin-bottom: 16px;
+  gap: 16px;
+  border: 1px solid #f0f0f0;
 }
 .jobLogoWrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 80px;
-  width: 110px;
+  height: 60px;
+  width: 60px;
   flex-shrink: 0;
 }
 .jobLogo {
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
   object-fit: contain;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
 }
 .jobInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 0;
+  gap: 6px;
 }
 .jobCompany {
-  font-size: 1.1rem;
-  color: #222;
+  font-size: 0.95rem;
+  color: #4b5563;
   margin-bottom: 2px;
 }
 .jobTitleRow {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .jobTitle {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #181818;
-  line-height: 1.1;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.3;
 }
 .badgeNew {
-  background: #ede9fe;
-  color: #7c3aed;
-  font-size: 1rem;
+  background: #f3e8ff;
+  color: #7e22ce;
+  font-size: 0.85rem;
   font-weight: 500;
-  border-radius: 6px;
-  padding: 2px 10px;
-  margin-left: 8px;
+  border-radius: 4px;
+  padding: 2px 8px;
   display: inline-block;
 }
 .jobMeta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
-  color: #757575;
-  font-size: 1.13rem;
-  margin-bottom: 8px;
-  margin-top: 2px;
+  color: #6b7280;
+  font-size: 0.9rem;
 }
 .jobMetaIcon {
-  margin-right: 3px;
+  margin-right: 4px;
+  font-size: 1.1em;
+  position: relative;
+  top: 1px;
 }
 .jobMetaDot {
-  color: #bbb;
+  color: #d1d5db;
   font-size: 1.2em;
   margin: 0 2px;
+  display: none;
 }
 .jobDesc {
-  color: #666;
-  font-size: 1.13rem;
-  margin-top: 2px;
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin-top: 8px;
   line-height: 1.5;
 }
 .reviewHeaderBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 .reviewScore {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-right: 12px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-right: 10px;
+  color: #111827;
 }
-.reviewStars {
-  color: #f7b500;
-  font-size: 1.7rem;
-  margin-right: 18px;
+.starRating {
+  display: flex;
+  gap: 2px;
+}
+.star {
+  color: #d1d5db;
+  font-size: 1.5rem;
+}
+.star.filled {
+  color: #f59e0b;
 }
 .reviewFilterBar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 .reviewFilterBtn {
   background: #fff;
-  border: 1.5px solid #d1d5db;
-  border-radius: 7px;
-  padding: 6px 16px;
-  font-size: 1rem;
-  color: #2563eb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  color: #4b5563;
   font-weight: 500;
-  margin-right: 8px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.2s;
 }
-.reviewFilterBtn.selected, .reviewFilterBtn:hover {
-  background: #e0e7ff;
-  border-color: #2563eb;
+.reviewFilterBtn.selected {
+  background: #ebf5ff;
+  border-color: #93c5fd;
+  color: #2563eb;
 }
-.reviewCard {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 28px 32px 20px 32px;
+.reviewFilterBtn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+.ratingCountText {
+  font-style: italic;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+.reviewForm {
+  background: #f9fafb;
+  padding: 24px;
+  border-radius: 12px;
   margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+}
+.reviewForm h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  color: #111827;
+  font-weight: 600;
+}
+.reviewStarPicker {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.reviewStar {
+  font-size: 28px;
+  cursor: pointer;
+  color: #d1d5db;
+  transition: color 0.2s;
+}
+.reviewStar.active {
+  color: #f59e0b;
+}
+.reviewTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  font-family: inherit;
+  resize: vertical;
+  background: #fff;
+}
+.reviewTextarea:focus {
+  outline: none;
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+.reviewFormFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+.reviewSubmitBtn {
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+.reviewSubmitBtn:hover {
+  background: #1d4ed8;
+}
+.reviewsSection {
+  margin-top: 30px;
+}
+.loadingReviews {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+}
+.reviewItem {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.reviewHeader {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
-  position: relative;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.reviewUser {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .reviewAvatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  background: #e0e7ef;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #1976d2;
-  font-size: 1.2rem;
 }
-.reviewMain {
-  flex: 1;
+.reviewUserInfo {
   display: flex;
   flex-direction: column;
-}
-.reviewUserRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  gap: 2px;
 }
 .reviewUserName {
-  font-weight: 700;
-  font-size: 1.15rem;
-}
-.reviewStarsRow {
-  color: #f7b500;
-  font-size: 1.2rem;
-  margin-left: 2px;
-}
-.reviewTime {
-  margin-left: auto;
-  color: #bdbdbd;
-  font-size: 1rem;
-  font-weight: 400;
-}
-.reviewContent {
-  margin: 8px 0 0 0;
-  color: #222;
-  font-size: 1.13rem;
-  line-height: 1.5;
-}
-.reviewReplyList {
-  margin-top: 18px;
-  margin-left: 44px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.reviewReplyCard {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 14px 18px 12px 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-}
-.reviewReplyAvatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #e0e7ef;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #1976d2;
-  font-size: 1rem;
-}
-.reviewReplyMain {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-.reviewReplyUserRow {
+  font-weight: 600;
+  color: #111827;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.reviewReplyUserName {
+.companyBadge {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.7rem;
   font-weight: 600;
-  font-size: 1.05rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
 }
-.reviewReplyTime {
-  margin-left: auto;
-  color: #bdbdbd;
-  font-size: 0.98rem;
+.reviewStars {
+  display: flex;
+  gap: 2px;
 }
-.reviewReplyContent {
-  margin: 4px 0 0 0;
-  color: #222;
-  font-size: 1.08rem;
-  line-height: 1.5;
+.reviewTime {
+  color: #6b7280;
+  font-size: 0.85rem;
 }
-.form {
-  margin-top: 32px;
-  background: #f8fafc;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 18px 20px;
+.reviewCompanyTag {
+  background: #f9fafb;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #e5e7eb;
 }
-.textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #cfd8dc;
+.reviewCompanyTag a {
+  color: #2563eb;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.reviewCompanyTag a:hover {
+  text-decoration: underline;
+}
+.reviewContent {
+  color: #111827;
+  line-height: 1.6;
+  margin-bottom: 16px;
   font-size: 1rem;
-  margin-bottom: 10px;
-  resize: vertical;
 }
-.button {
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-size: 1rem;
-  font-weight: 600;
+.reviewActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.voteButtons {
+  display: flex;
+  align-items: center;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.voteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  width: 32px;
+  height: 32px;
+  transition: background-color 0.2s;
 }
-.button:hover {
-  background: #1256a3;
+.voteBtn:hover {
+  background-color: #f3f4f6;
+}
+.voteCount {
+  padding: 0 8px;
+  font-weight: 600;
+  color: #374151;
+  min-width: 24px;
+  text-align: center;
+}
+.voteIcon {
+  font-size: 24px;
+  color: #6b7280;
+}
+.upvote:hover .voteIcon {
+  color: #2563eb;
+}
+.downvote:hover .voteIcon {
+  color: #dc2626;
+}
+.replyButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+.replyButton:hover {
+  background-color: #f9fafb;
+  color: #2563eb;
+}
+.replyIcon {
+  font-size: 16px;
+}
+.reviewReplies {
+  margin-top: 16px;
+  margin-left: 24px;
+  padding-left: 24px;
+  border-left: 2px solid #e5e7eb;
+}
+.reviewReply {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.replyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.replyAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.replyUserName {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.replyLocation {
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: normal;
+}
+.replyTime {
+  color: #6b7280;
+  font-size: 0.8rem;
+}
+.replyContent {
+  color: #111827;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+.replyActions {
+  display: flex;
+  justify-content: flex-end;
+}
+.replyForm {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+}
+.replyTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  font-family: inherit;
+  resize: vertical;
+  background: #fff;
+}
+.replyTextarea:focus {
+  outline: none;
+  border-color: #93c5fd;
+}
+.replyFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.submitReplyBtn {
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.cancelReplyBtn {
+  background: #fff;
+  color: #6b7280;
+  font-weight: 500;
+  padding: 6px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.noReviews, .noJobs {
+  background: #f9fafb;
+  padding: 32px;
+  text-align: center;
+  border-radius: 8px;
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 16px 0;
+  border: 1px solid #e5e7eb;
 } 
