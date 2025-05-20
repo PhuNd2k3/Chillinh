@@ -19,7 +19,8 @@ import {
   MdAdd,
   MdArrowDropUp,
   MdArrowDropDown,
-  MdOutlineMessage
+  MdOutlineMessage,
+  MdClose
 } from "react-icons/md";
 dayjs.extend(relativeTime);
 import API_BASE_URL from "./../api/config";
@@ -54,6 +55,8 @@ function CompanyDetailPage() {
   const [replyingTo, setReplyingTo] = useState(null);
   const [avgRating, setAvgRating] = useState(0);
   const [ratingCount, setRatingCount] = useState(0);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showJobModal, setShowJobModal] = useState(false);
 
   useEffect(() => {
     axios
@@ -150,6 +153,16 @@ function CompanyDetailPage() {
     }
   };
 
+  const handleJobClick = (job) => {
+    setSelectedJob(job);
+    setShowJobModal(true);
+  };
+
+  const closeJobModal = () => {
+    setShowJobModal(false);
+    setSelectedJob(null);
+  };
+
   const renderCompanyLogo = () => {
     // For demo purposes, could be replaced with actual logo from company data
     return "/pictures/misa.png";
@@ -216,7 +229,7 @@ function CompanyDetailPage() {
         <div className="sectionTitle">Vị trí đang tuyển</div>
         {company.recruitment && company.recruitment.is_hiring && company.recruitment.jobs && company.recruitment.jobs.length > 0 ? (
           company.recruitment.jobs.map((job) => (
-            <div key={job.id} className="jobCard">
+            <div key={job.id} className="jobCard" onClick={() => handleJobClick(job)}>
               <div className="jobLogoWrap">
                 <img className="jobLogo" src={renderCompanyLogo()} alt="logo" />
               </div>
@@ -256,42 +269,13 @@ function CompanyDetailPage() {
                   </span>
                 </div>
                 <div className="jobDesc">{job.description}</div>
-
-                {/* Additional job details */}
-                <div className="jobDetailSection">
-                  <div className="jobDetailItem">
-                    <span className="jobDetailIcon"><MdWork /></span>
-                    <span className="jobDetailLabel">Kỹ năng chuyên môn:</span>
-                    <span className="jobDetailValue">{job.technical_skills?.join(", ")}</span>
-                  </div>
-                  <div className="jobDetailItem">
-                    <span className="jobDetailIcon"><MdPeople /></span>
-                    <span className="jobDetailLabel">Kỹ năng mềm:</span>
-                    <span className="jobDetailValue">{job.soft_skills?.join(", ")}</span>
-                  </div>
-                  <div className="jobDetailItem">
-                    <span className="jobDetailIcon"><MdLanguage /></span>
-                    <span className="jobDetailLabel">Yêu cầu ngôn ngữ:</span>
-                    <span className="jobDetailValue">{job.language_requirement}</span>
-                  </div>
-                  <div className="jobDetailItem">
-                    <span className="jobDetailIcon"><MdSchool /></span>
-                    <span className="jobDetailLabel">Trường đại học:</span>
-                    <span className="jobDetailValue">{job.student_target?.university}</span>
-                  </div>
-                  <div className="jobDetailItem">
-                    <span className="jobDetailIcon"><MdOutlineSchedule /></span>
-                    <span className="jobDetailLabel">Thời gian làm việc:</span>
-                    <span className="jobDetailValue">{job.working_hours_per_week}</span>
-                  </div>
-                </div>
               </div>
             </div>
           ))
         ) : (
           company.jobs && company.jobs.length > 0 ? (
             company.jobs.map((job) => (
-              <div key={job.id} className="jobCard">
+              <div key={job.id} className="jobCard" onClick={() => handleJobClick(job)}>
                 <div className="jobLogoWrap">
                   <img className="jobLogo" src={renderCompanyLogo()} alt="logo" />
                 </div>
@@ -337,6 +321,110 @@ function CompanyDetailPage() {
           ) : (
             <div className="noJobs">Công ty hiện không có vị trí tuyển dụng nào</div>
           )
+        )}
+
+        {/* Job Details Modal */}
+        {showJobModal && selectedJob && (
+          <div className="modalOverlay">
+            <div className="jobModal">
+              <div className="modalHeader">
+                <h2>{selectedJob.title}</h2>
+                <button className="closeModalBtn" onClick={closeJobModal}>
+                  <MdClose />
+                </button>
+              </div>
+              <div className="modalBody">
+                <div className="modalCompanyInfo">
+                  <img className="modalCompanyLogo" src={renderCompanyLogo()} alt="logo" />
+                  <div>
+                    <div className="modalCompanyName">{company.name}</div>
+                    <div className="modalJobMeta">
+                      <span>
+                        <MdLocationOn className="modalMetaIcon" />
+                        {selectedJob.location}
+                      </span>
+                      <span>
+                        <MdAccessTime className="modalMetaIcon" />
+                        {selectedJob.working_type || selectedJob.type}
+                      </span>
+                      <span>
+                        <MdAttachMoney className="modalMetaIcon" />
+                        {selectedJob.salary}
+                      </span>
+                      <span>
+                        <MdCalendarToday className="modalMetaIcon" />
+                        {selectedJob.posted_time || timeAgo(selectedJob.posted)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="modalSection">
+                  <h3>Mô tả công việc</h3>
+                  <p>{selectedJob.description}</p>
+                </div>
+                
+                <div className="modalSection">
+                  <h3>Chi tiết công việc</h3>
+                  <div className="modalDetailSection">
+                    <div className="modalDetailItem">
+                      <MdWork className="modalDetailIcon" />
+                      <div>
+                        <div className="modalDetailLabel">Kỹ năng chuyên môn:</div>
+                        <div className="modalDetailValue">
+                          {selectedJob.technical_skills?.join(", ")}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="modalDetailItem">
+                      <MdPeople className="modalDetailIcon" />
+                      <div>
+                        <div className="modalDetailLabel">Kỹ năng mềm:</div>
+                        <div className="modalDetailValue">
+                          {selectedJob.soft_skills?.join(", ")}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="modalDetailItem">
+                      <MdLanguage className="modalDetailIcon" />
+                      <div>
+                        <div className="modalDetailLabel">Yêu cầu ngôn ngữ:</div>
+                        <div className="modalDetailValue">
+                          {selectedJob.language_requirement}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="modalDetailItem">
+                      <MdSchool className="modalDetailIcon" />
+                      <div>
+                        <div className="modalDetailLabel">Trường đại học:</div>
+                        <div className="modalDetailValue">
+                          {selectedJob.student_target?.university}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="modalDetailItem">
+                      <MdOutlineSchedule className="modalDetailIcon" />
+                      <div>
+                        <div className="modalDetailLabel">Thời gian làm việc:</div>
+                        <div className="modalDetailValue">
+                          {selectedJob.working_hours_per_week}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="modalFooter">
+                  <button className="applyButton">Ứng tuyển ngay</button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         <div className="sectionTitle">Đánh giá</div>
