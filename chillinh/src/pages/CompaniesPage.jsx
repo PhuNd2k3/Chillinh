@@ -8,14 +8,14 @@ import { getAllCompanies, getMatchCompanies } from "../api/companyAPI";
 
 const CompaniesPage = () => {
   const [filters, setFilters] = useState({
-    skills: [],
-    languages: [],
-    workingTime: "",
-    workType: "",
-    experience: "",
+    salary: [],
+    workingMode: [],
+    language: [],
+    workingType: []
   });
 
-  const [companies, setCompanies] = useState([]);
+  const [allCompanies, setAllCompanies] = useState([]); // lưu toàn bộ danh sách
+  const [companies, setCompanies] = useState([]); // danh sách hiển thị trang hiện tại
   const [matchedCompanies, setMatchedCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,16 +29,27 @@ const CompaniesPage = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
 
+  const COMPANIES_PER_PAGE = 10;
+
   useEffect(() => {
     fetchCompanies();
     fetchMatchedCompanies();
-  }, [pagination.currentPage]);
+  }, []); // chỉ fetch 1 lần khi mount
+
+  useEffect(() => {
+    handlePaginationAndFiltering();
+  }, [filters, pagination.currentPage, allCompanies]);
+
+  useEffect(() => {
+    // Reset currentPage về 1 khi filter thay đổi
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
+  }, [filters]);
 
   const fetchCompanies = async () => {
     try {
       setLoading(true);
-      const response = await getAllCompanies(pagination.currentPage);
-      setCompanies(response.data);
+      const response = await getAllCompanies();
+      setAllCompanies(response.data);
       setPagination((prev) => ({
         ...prev,
         totalPages: response.totalPages,
@@ -63,31 +74,6 @@ const CompaniesPage = () => {
     }
   };
 
-  const handlePageChange = (newPage) => {
-    setPagination((prev) => ({
-      ...prev,
-      currentPage: newPage,
-    }));
-  };
-
-  const renderPagination = () => {
-    const pages = [];
-    for (let i = 1; i <= pagination.totalPages; i++) {
-      pages.push(
-        <button
-          key={i}
-          className={`pagination-btn ${pagination.currentPage === i ? "active" : ""
-            }`}
-          onClick={() => handlePageChange(i)}
-        >
-          {i}
-        </button>
-      );
-    }
-    return pages;
-  };
-
-  // Hàm lấy giá trị filter từ UI
   const getFilterValues = () => {
     const salary = Array.from(document.querySelectorAll('input[name="salary"]:checked')).map(el => el.value);
     const workingMode = Array.from(document.querySelectorAll('input[name="workingMode"]:checked')).map(el => el.value);
@@ -96,17 +82,15 @@ const CompaniesPage = () => {
     return { salary, workingMode, language, workingType };
   };
 
-  // Hàm lọc công ty
-  const filterCompanies = () => {
-    const { salary, workingMode, language, workingType } = getFilterValues();
-    let result = companies;
-    if (salary.length > 0) {
-      result = result.filter(company =>
+  const handlePaginationAndFiltering = () => {
+    let filtered = [...allCompanies];
+    if (filters.salary.length > 0) {
+      filtered = filtered.filter(company =>
         company.recruitment?.jobs?.some(job => {
           if (!job.salary) return false;
           const salaryStr = job.salary.replace(/[^\d\-]/g, '');
           const [min, max] = salaryStr.split('-').map(s => parseInt(s.trim()));
-          return salary.some(range => {
+          return filters.salary.some(range => {
             if (range === '0 - 1,000,000 VND') return min <= 1000000;
             if (range === '1,000,000 - 3,000,000 VND') return min >= 1000000 && max <= 3000000;
             if (range === '3,000,000 - 5,000,000 VND') return min >= 3000000 && max <= 5000000;
@@ -117,28 +101,62 @@ const CompaniesPage = () => {
         })
       );
     }
-    if (workingMode.length > 0) {
-      result = result.filter(company =>
+    if (filters.workingMode.length > 0) {
+      filtered = filtered.filter(company =>
         company.recruitment?.jobs?.some(job =>
-          workingMode.includes(job.working_mode)
+          filters.workingMode.includes(job.working_mode)
         )
       );
     }
-    if (language.length > 0) {
-      result = result.filter(company =>
+    if (filters.language.length > 0) {
+      filtered = filtered.filter(company =>
         company.recruitment?.jobs?.some(job =>
-          language.some(lan => job.language_requirement && job.language_requirement.includes(lan))
+          filters.language.some(lan => job.language_requirement && job.language_requirement.includes(lan))
         )
       );
     }
-    if (workingType.length > 0) {
-      result = result.filter(company =>
+    if (filters.workingType.length > 0) {
+      filtered = filtered.filter(company =>
         company.recruitment?.jobs?.some(job =>
-          workingType.includes(job.working_type)
+          filters.workingType.includes(job.working_type)
         )
       );
     }
-    setFilteredCompanies(result);
+    // Tính lại totalPages
+    const totalPages = Math.max(1, Math.ceil(filtered.length / COMPANIES_PER_PAGE));
+    // Nếu currentPage > totalPages thì reset về 1
+    let currentPage = pagination.currentPage > totalPages ? 1 : pagination.currentPage;
+    setPagination(prev => ({
+      ...prev,
+      totalPages,
+      totalCount: filtered.length,
+      currentPage
+    }));
+    // Phân trang
+    const startIndex = (currentPage - 1) * COMPANIES_PER_PAGE;
+    const endIndex = startIndex + COMPANIES_PER_PAGE;
+    const paginatedCompanies = filtered.slice(startIndex, endIndex);
+    setFilteredCompanies(filtered);
+    setCompanies(paginatedCompanies);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: Math.max(1, Math.min(newPage, pagination.totalPages)),
+    }));
+    // Scroll lên đầu đoạn chữ 'Tất cả công ty' khi đổi trang
+    setTimeout(() => {
+      const resultSection = document.getElementById('search-result-section');
+      if (resultSection) {
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          window.scrollBy({ top: -900, left: 0, behavior: 'smooth' });
+        }, 400);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   // Khi nhấn nút Tìm kiếm
@@ -146,7 +164,9 @@ const CompaniesPage = () => {
     e.preventDefault();
     setIsSearching(true);
     setShowMatchedSection(false);
-    filterCompanies();
+    const newFilters = getFilterValues();
+    setFilters(newFilters);
+    // Scroll lên đầu đoạn chữ 'Tất cả công ty'
     setTimeout(() => {
       const resultSection = document.getElementById('search-result-section');
       if (resultSection) {
@@ -158,6 +178,22 @@ const CompaniesPage = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }, 100);
+  };
+
+  const renderPagination = () => {
+    const pages = [];
+    for (let i = 1; i <= pagination.totalPages; i++) {
+      pages.push(
+        <button
+          key={i}
+          className={`pagination-btn ${pagination.currentPage === i ? "active" : ""}`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pages;
   };
 
   if (loading) {
@@ -314,12 +350,12 @@ const CompaniesPage = () => {
             <h2>{isSearching ? 'Kết quả tìm kiếm' : 'Tất cả công ty'}</h2>
           </div>
           <div className="companies-grid">
-            {(isSearching ? filteredCompanies : companies).length === 0 ? (
+            {companies.length === 0 ? (
               <div style={{ textAlign: 'center', color: '#888', padding: '2rem 0', fontSize: '1.1rem' }}>
                 Không có công ty phù hợp
               </div>
             ) : (
-              (isSearching ? filteredCompanies : companies).map((company) => (
+              companies.map((company) => (
                 <div key={company.id} className="company-card">
                   <div className="company-logo">
                     <img src={company.logo || msbLogo} alt={company.name} />

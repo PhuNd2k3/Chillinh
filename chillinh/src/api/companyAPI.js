@@ -1,22 +1,13 @@
 import axios from 'axios';
 import API_BASE_URL from "./config";
 
-
-export const getAllCompanies = async (page = 1, limit = 10) => {
+export const getAllCompanies = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/companies`, {
-      params: {
-        _page: page,
-        _limit: limit,
-        _sort: 'id',
-        _order: 'desc'
-      }
-    });
+    const response = await axios.get(`${API_BASE_URL}/companies`);
     return {
       data: response.data,
-      totalCount: parseInt(response.headers['x-total-count'] || '0'),
-      currentPage: page,
-      totalPages: Math.ceil(parseInt(response.headers['x-total-count'] || '0') / limit)
+      totalCount: response.data.length,
+      totalPages: Math.ceil(response.data.length / 10)
     };
   } catch (error) {
     console.error('Error fetching companies:', error);
