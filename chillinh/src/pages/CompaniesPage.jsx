@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import "./CompaniesPage.css";
 import msbLogo from "../assets/logos/msb-logo.svg";
 import upbaseLogo from "../assets/logos/upbase-logo.svg";
+import logo1 from "../assets/logos/logo1.svg";
+import logo2 from "../assets/logos/logo2.svg";
+import logo3 from "../assets/logos/logo3.svg";
+import logo4 from "../assets/logos/logo4.svg";
+import logo5 from "../assets/logos/logo5.svg";
 import Header from "../components/Header/Header";
 import { Link } from "react-router-dom";
 import { getAllCompanies, getMatchCompanies } from "../api/companyAPI";
@@ -222,6 +227,20 @@ const CompaniesPage = () => {
     return pages;
   };
 
+  // Tạo mảng logo mẫu
+  const companyLogos = [msbLogo, upbaseLogo, logo1, logo2, logo3, logo4, logo5];
+  // Hàm lấy random logo
+  function getRandomLogo(companyId) {
+    // Đảm bảo mỗi công ty luôn lấy cùng 1 logo random dựa trên id
+    if (!companyId) return companyLogos[Math.floor(Math.random() * companyLogos.length)];
+    let hash = 0;
+    for (let i = 0; i < companyId.length; i++) {
+      hash = companyId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const idx = Math.abs(hash) % companyLogos.length;
+    return companyLogos[idx];
+  }
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
@@ -324,52 +343,54 @@ const CompaniesPage = () => {
             style={{ maxHeight: showMatchedSection ? 2000 : 0, overflow: 'hidden', transition: 'max-height 0.5s cubic-bezier(0.4,0,0.2,1)' }}
           >
             {showMatchedSection && (
-              (showAllMatched
-                ? matchedCompanies.slice(0, 5)
-                : matchedCompanies.slice(0, 3)
-              ).map((company) => (
-                <div key={company.id} className="company-card">
-                  <div className="company-logo">
-                    <img src={company.logo || msbLogo} alt={company.name} />
-                  </div>
-                  <div className="company-info">
-                    <h3>
-                      <Link to={`/companies/${company.id}`}>{company.name}</Link>
-                    </h3>
-                    <a href="#" className="job-title-link">
-                      {company.recruitment?.jobs?.[0]?.title ||
-                        "Vị trí đang tuyển"}
-                    </a>
-                    <div className="company-details">
-                      <span>{company.location || "Hà Nội"}</span>
-                      <span>
-                        {company.recruitment?.jobs?.[0]?.type || "Toàn thời gian"}
-                      </span>
-                      <span>
-                        {company.recruitment?.jobs?.[0]?.salary || "Thỏa thuận"}
-                      </span>
-                      <span>1 ngày trước</span>
+              <>
+                {(showAllMatched
+                  ? matchedCompanies.slice(0, 5)
+                  : matchedCompanies.slice(0, 3)
+                ).map((company) => (
+                  <div key={company.id} className="company-card">
+                    <div className="company-logo">
+                      <img src={company.logo || getRandomLogo(company.id)} alt={company.name} />
                     </div>
-                    <p className="company-description">
-                      {company.description || "Không có mô tả"}
-                    </p>
-                    <div className="match-info">
-                      <span className="match-score">
-                        Độ phù hợp: {company.matchScore}
-                      </span>
+                    <div className="company-info">
+                      <h3>
+                        <Link to={`/companies/${company.id}`}>{company.name}</Link>
+                      </h3>
+                      <a href="#" className="job-title-link">
+                        {company.recruitment?.jobs?.[0]?.title ||
+                          "Vị trí đang tuyển"}
+                      </a>
+                      <div className="company-details">
+                        <span>{company.location || "Hà Nội"}</span>
+                        <span>
+                          {company.recruitment?.jobs?.[0]?.type || "Toàn thời gian"}
+                        </span>
+                        <span>
+                          {company.recruitment?.jobs?.[0]?.salary || "Thỏa thuận"}
+                        </span>
+                        <span>1 ngày trước</span>
+                      </div>
+                      <p className="company-description">
+                        {company.description || "Không có mô tả"}
+                      </p>
+                      <div className="match-info">
+                        <span className="match-score">
+                          Độ phù hợp: {company.matchScore}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
-            {matchedCompanies.length > 3 && !showAllMatched && showMatchedSection && (
-              <button
-                className="show-more-btn"
-                onClick={() => setShowAllMatched(true)}
-                style={{ margin: "0 auto", display: "block", marginTop: "1rem" }}
-              >
-                Xem thêm
-              </button>
+                ))}
+                {matchedCompanies.length > 3 && !showAllMatched && (
+                  <button
+                    className="show-more-btn"
+                    onClick={() => setShowAllMatched(true)}
+                    style={{ margin: "0 auto", display: "block", marginTop: "1rem" }}
+                  >
+                    Xem thêm
+                  </button>
+                )}
+              </>
             )}
           </div>
           <div className="companies-list-header popular" id="search-result-section">
@@ -384,7 +405,7 @@ const CompaniesPage = () => {
               companies.map((company) => (
                 <div key={company.id} className="company-card">
                   <div className="company-logo">
-                    <img src={company.logo || msbLogo} alt={company.name} />
+                    <img src={company.logo || getRandomLogo(company.id)} alt={company.name} />
                   </div>
                   <div className="company-info">
                     <h3>
