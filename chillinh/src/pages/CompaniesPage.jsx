@@ -82,49 +82,75 @@ const CompaniesPage = () => {
     return { salary, workingMode, language, workingType };
   };
 
+  function parseSalaryRange(rangeString) {
+    if (!rangeString || typeof rangeString !== 'string') return null;
+    const isTrieu = /triệu|trieu|TRIỆU|tr/i.test(rangeString);
+    const isNghin = /nghìn|nghin|nghìn|nghìn/i.test(rangeString);
+    if (rangeString.includes('+')) {
+      let min = parseInt(rangeString.replace(/[^\d]/g, ''));
+      if (isTrieu) min = min * 1_000_000;
+      if (isNghin) min = min * 1_000;
+      return { min, max: Infinity, display: rangeString };
+    }
+    const match = rangeString.match(/(\d{1,3}(?:[.,]\d{3})*)\s*-\s*(\d{1,3}(?:[.,]\d{3})*)/);
+    if (match) {
+      let min = parseInt(match[1].replace(/[^\d]/g, ''));
+      let max = parseInt(match[2].replace(/[^\d]/g, ''));
+      if (isTrieu) { min = min * 1_000_000; max = max * 1_000_000; }
+      if (isNghin) { min = min * 1_000; max = max * 1_000; }
+      return { min, max, display: rangeString };
+    }
+    // fallback: nếu chỉ có 1 số duy nhất
+    const single = rangeString.match(/(\d{1,3}(?:[.,]\d{3})*)/);
+    if (single) {
+      let num = parseInt(single[1].replace(/[^\d]/g, ''));
+      if (isTrieu) num = num * 1_000_000;
+      if (isNghin) num = num * 1_000;
+      return { min: num, max: num, display: rangeString };
+    }
+    return null;
+  }
+
   const handlePaginationAndFiltering = () => {
-    let filtered = [...allCompanies];
+    let filtered = allCompanies;
     if (filters.salary.length > 0) {
-      filtered = filtered.filter(company =>
-        company.recruitment?.jobs?.some(job => {
-          if (!job.salary) return false;
-          const salaryStr = job.salary.replace(/[^\d\-]/g, '');
-          const [min, max] = salaryStr.split('-').map(s => parseInt(s.trim()));
-          return filters.salary.some(range => {
-            if (range === '0 - 1,000,000 VND') return min <= 1000000;
-            if (range === '1,000,000 - 3,000,000 VND') return min >= 1000000 && max <= 3000000;
-            if (range === '3,000,000 - 5,000,000 VND') return min >= 3000000 && max <= 5000000;
-            if (range === '5,000,000 - 7,000,000 VND') return min >= 5000000 && max <= 7000000;
-            if (range === '7,000,000+ VND') return min >= 7000000;
-            return false;
-          });
-        })
-      );
+      filtered = filtered.filter(company => {
+        const job = company.recruitment?.jobs?.[0];
+        if (!job || !job.salary) return false;
+        const salaryObj = parseSalaryRange(job.salary);
+        if (!salaryObj) return false; // Nếu không phân tích được thì bỏ qua
+        return filters.salary.some(range => {
+          const filterObj = parseSalaryRange(range);
+          if (!filterObj) return false;
+          if (filterObj.max === Infinity) {
+            return salaryObj.min >= filterObj.min;
+          }
+          return (
+            (salaryObj.min <= filterObj.max && salaryObj.max >= filterObj.min)
+          );
+        });
+      });
     }
     if (filters.workingMode.length > 0) {
-      filtered = filtered.filter(company =>
-        company.recruitment?.jobs?.some(job =>
-          filters.workingMode.includes(job.working_mode)
-        )
-      );
+      filtered = filtered.filter(company => {
+        const job = company.recruitment?.jobs?.[0];
+        return job && filters.workingMode.includes(job.working_mode);
+      });
     }
     if (filters.language.length > 0) {
-      filtered = filtered.filter(company =>
-        company.recruitment?.jobs?.some(job =>
-          filters.language.some(lan => job.language_requirement && job.language_requirement.includes(lan))
-        )
-      );
+      filtered = filtered.filter(company => {
+        const job = company.recruitment?.jobs?.[0];
+        return job && filters.language.some(lan => job.language_requirement && job.language_requirement.includes(lan));
+      });
     }
     if (filters.workingType.length > 0) {
-      filtered = filtered.filter(company =>
-        company.recruitment?.jobs?.some(job =>
-          filters.workingType.includes(job.working_type)
-        )
-      );
+      filtered = filtered.filter(company => {
+        const job = company.recruitment?.jobs?.[0];
+        return job && filters.workingType.includes(job.working_type);
+      });
     }
     // Tính lại totalPages
     const totalPages = Math.max(1, Math.ceil(filtered.length / COMPANIES_PER_PAGE));
-    // Nếu currentPage > totalPages thì reset về 1
     let currentPage = pagination.currentPage > totalPages ? 1 : pagination.currentPage;
     setPagination(prev => ({
       ...prev,
