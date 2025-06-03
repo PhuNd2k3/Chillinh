@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header/Header";
 import "./ForumsPage.css";
 import NewPostModal from "./NewPostModal";
-import { fetchPosts, createVote, fetchComments, createPostComment } from "../api/forumApi";
+import { fetchPosts, createVote, fetchComments, createPostComment, fetchUserVotes } from "../api/forumApi";
 
 function ForumsPage() {
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -13,19 +14,41 @@ function ForumsPage() {
   const [loadingComments, setLoadingComments] = useState({}); // { [postId]: boolean }
   const [commentInputs, setCommentInputs] = useState({}); // { [postId]: string }
   const [sendingComment, setSendingComment] = useState({}); // { [postId]: boolean }
+  const [searchTag, setSearchTag] = useState('');
+  const [userVotes, setUserVotes] = useState({}); // { [postId]: 'upvote' | 'downvote' }
+  const [votingInProgress, setVotingInProgress] = useState({}); // { [postId]: boolean }
+
+  const currentUserId = "1"; // Mock user ID
 
   useEffect(() => {
     loadPosts();
+    loadUserVotes();
   }, []);
+
+  useEffect(() => {
+    // Filter posts when searchTag changes
+    if (searchTag.trim() === '') {
+      setFilteredPosts(posts);
+    } else {
+      const filtered = posts.filter(post => 
+        post.tags && post.tags.some(tag => 
+          tag.toLowerCase().includes(searchTag.toLowerCase())
+        )
+      );
+      setFilteredPosts(filtered);
+    }
+  }, [posts, searchTag]);
 
   const loadPosts = async () => {
     try {
       setLoading(true);
       const postsData = await fetchPosts();
-      setPosts(postsData.map(post => ({
+      const postsWithReplies = postsData.map(post => ({
         ...post,
         showAllReplies: false
-      })));
+      }));
+      setPosts(postsWithReplies);
+      setFilteredPosts(postsWithReplies);
       setError(null);
     } catch (err) {
       setError("Có lỗi xảy ra khi tải bài viết");
@@ -35,29 +58,68 @@ function ForumsPage() {
     }
   };
 
-  const handleVoteUp = async (postId) => {
+  const loadUserVotes = async () => {
     try {
-      await createVote(postId, "1", "upvote"); // Using a mock userId of "1" for now
-      setPosts(prev =>
-        prev.map(post =>
-          post.id === postId ? { ...post, voteCount: post.voteCount + 1 } : post
-        )
-      );
+      const votes = await fetchUserVotes(currentUserId);
+      setUserVotes(votes);
+    } catch (err) {
+      console.error("Error loading user votes:", err);
+    }
+  };
+
+  const handleVoteUp = async (postId) => {
+    if (votingInProgress[postId] || userVotes[postId]) return; // Disable if already voted
+    
+    setVotingInProgress(prev => ({ ...prev, [postId]: true }));
+    try {
+      const response = await createVote(postId, currentUserId, "upvote");
+      
+      if (response.success) {
+        // Cập nhật vote state
+        setUserVotes(prev => ({ ...prev, [postId]: "upvote" }));
+        
+        // Cập nhật vote count trong posts
+        setPosts(prev =>
+          prev.map(post => 
+            post.id === postId ? { ...post, upvotes: post.upvotes + 1 } : post
+          )
+        );
+      } else {
+        alert(response.message || "Không thể vote");
+      }
     } catch (err) {
       console.error("Error voting up:", err);
+      alert("Có lỗi xảy ra khi vote");
+    } finally {
+      setVotingInProgress(prev => ({ ...prev, [postId]: false }));
     }
   };
 
   const handleVoteDown = async (postId) => {
+    if (votingInProgress[postId] || userVotes[postId]) return; // Disable if already voted
+    
+    setVotingInProgress(prev => ({ ...prev, [postId]: true }));
     try {
-      await createVote(postId, "1", "downvote"); // Using a mock userId of "1" for now
-      setPosts(prev =>
-        prev.map(post =>
-          post.id === postId ? { ...post, voteCount: post.voteCount - 1 } : post
-        )
-      );
+      const response = await createVote(postId, currentUserId, "downvote");
+      
+      if (response.success) {
+        // Cập nhật vote state
+        setUserVotes(prev => ({ ...prev, [postId]: "downvote" }));
+        
+        // Cập nhật vote count trong posts
+        setPosts(prev =>
+          prev.map(post => 
+            post.id === postId ? { ...post, downvotes: post.downvotes + 1 } : post
+          )
+        );
+      } else {
+        alert(response.message || "Không thể vote");
+      }
     } catch (err) {
       console.error("Error voting down:", err);
+      alert("Có lỗi xảy ra khi vote");
+    } finally {
+      setVotingInProgress(prev => ({ ...prev, [postId]: false }));
     }
   };
 
@@ -102,6 +164,16 @@ function ForumsPage() {
     }
   };
 
+  const handleSearchTag = () => {
+    // This function is called when search button is clicked
+    // The filtering is already handled by useEffect above
+    console.log('Searching for tag:', searchTag);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTag('');
+  };
+
   if (loading) {
     return <div className="loading">Đang tải...</div>;
   }
@@ -124,14 +196,42 @@ function ForumsPage() {
           <div className="forums-main">
             <div className="forums-main-header">
               <h2>Bài viết phổ biến</h2>
-              <select className="forums-sort">
-                <option>Sắp xếp theo</option>
-                <option>Mới nhất</option>
-                <option>Nhiều vote nhất</option>
-              </select>
+              <div className="forums-search-container">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm theo tag..."
+                  value={searchTag}
+                  onChange={(e) => setSearchTag(e.target.value)}
+                  className="forums-search-input"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearchTag();
+                    }
+                  }}
+                />
+                <button 
+                  onClick={handleSearchTag}
+                  className="forums-search-btn"
+                >
+                  Tìm kiếm
+                </button>
+                {searchTag && (
+                  <button 
+                    onClick={handleClearSearch}
+                    className="forums-clear-btn"
+                  >
+                    Xóa
+                  </button>
+                )}
+              </div>
             </div>
+            {searchTag && (
+              <div className="forums-search-result">
+                Tìm thấy {filteredPosts.length} bài viết cho tag "{searchTag}"
+              </div>
+            )}
             <div className="forums-post-list">
-              {posts.map((post) => (
+              {filteredPosts.map((post) => (
                 <div className="forums-post-item" key={post.id}>
                   <div className="forums-post-avatar">
                     <img src={post.avatar} alt={post.author} />
@@ -150,9 +250,30 @@ function ForumsPage() {
                       ))}
                     </div>
                     <div className="forums-post-actions">
-                      <span className="vote up" onClick={() => handleVoteUp(post.id)}>▲</span>
-                      <span className="vote-count">{post.voteCount}</span>
-                      <span className="vote down" onClick={() => handleVoteDown(post.id)}>▼</span>
+                      <span 
+                        className={`vote up ${userVotes[post.id] === 'upvote' ? 'voted' : ''} ${votingInProgress[post.id] || userVotes[post.id] ? 'disabled' : ''}`} 
+                        onClick={() => !votingInProgress[post.id] && !userVotes[post.id] && handleVoteUp(post.id)}
+                        title={
+                          userVotes[post.id] === 'upvote' ? 'Bạn đã vote up' : 
+                          userVotes[post.id] === 'downvote' ? 'Bạn đã vote cho bài viết này rồi' :
+                          'Vote up'
+                        }
+                      >
+                        ▲
+                      </span>
+                      <span className="vote-count upvotes">{post.upvotes}</span>
+                      <span 
+                        className={`vote down ${userVotes[post.id] === 'downvote' ? 'voted' : ''} ${votingInProgress[post.id] || userVotes[post.id] ? 'disabled' : ''}`} 
+                        onClick={() => !votingInProgress[post.id] && !userVotes[post.id] && handleVoteDown(post.id)}
+                        title={
+                          userVotes[post.id] === 'downvote' ? 'Bạn đã vote down' : 
+                          userVotes[post.id] === 'upvote' ? 'Bạn đã vote cho bài viết này rồi' :
+                          'Vote down'
+                        }
+                      >
+                        ▼
+                      </span>
+                      <span className="vote-count downvotes">{post.downvotes}</span>
                       <span className="comment-count" onClick={() => handleShowAllReplies(post.id)} style={{cursor:'pointer', color:'#2d6cdf', fontWeight:600}}>
                         {(comments[post.id] ? comments[post.id].length : post.commentCount)} bình luận
                       </span>

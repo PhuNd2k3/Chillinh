@@ -26,6 +26,18 @@ export const createVote = async (postId, userId, type) => {
   }
 };
 
+export const fetchUserVotes = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/user-votes`, {
+      params: { userId }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user votes:', error);
+    throw error;
+  }
+};
+
 export const createComment = async (postId, userId, content) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/comments`, {
