@@ -33,6 +33,7 @@ const CompaniesPage = () => {
   const [showMatchedSection, setShowMatchedSection] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [selectedWorkingTime, setSelectedWorkingTime] = useState("");
 
   const COMPANIES_PER_PAGE = 10;
 
@@ -67,6 +68,14 @@ const CompaniesPage = () => {
       setLoading(false);
     }
   };
+
+    const handleChange = (e) => {
+    setSelectedWorkingTime(e.target.value);
+  };
+
+    const clearSelection = () => {
+      setSelectedWorkingTime("");
+    };
 
   const fetchMatchedCompanies = async () => {
     try {
@@ -275,18 +284,25 @@ const CompaniesPage = () => {
             </div>
           </div>
           <div className="filter-section">
+            <div className="duy">
             <h3>Thời lượng làm việc</h3>
+{selectedWorkingTime && (
+                <button onClick={clearSelection} >
+                <p>x</p>
+                </button>
+              )}
+            </div>
             <div className="filter-options">
               <label>
-                <input type="radio" name="workingTime" value="less20" /> {"<"}{" "}
+                <input type="radio" name="workingTime" value="less20" onChange={handleChange} checked={selectedWorkingTime === "less20"}/> {"<"}{" "}
                 20h/tuần
               </label>
               <label>
-                <input type="radio" name="workingTime" value="20-30" /> 20 -
+                <input type="radio" name="workingTime" value="20-30" onChange={handleChange} checked={selectedWorkingTime === "20-30"}/> 20 -
                 30h/tuần
               </label>
               <label>
-                <input type="radio" name="workingTime" value="more30" /> {">"}{" "}
+                <input type="radio" name="workingTime" value="more30" onChange={handleChange} checked={selectedWorkingTime === "more30"}/> {">"}{" "}
                 30h/tuần
               </label>
             </div>
@@ -333,11 +349,6 @@ const CompaniesPage = () => {
                 </svg>
               </span>
             </h2>
-            <select className="sort-dropdown">
-              <option value="relevant">Sắp xếp theo</option>
-              <option value="newest">Mới nhất</option>
-              <option value="salary">Lương cao nhất</option>
-            </select>
           </div>
           <div className={`companies-grid collapse-content${showMatchedSection ? ' open' : ''}`}
             style={{ maxHeight: showMatchedSection ? 2000 : 0, overflow: 'hidden', transition: 'max-height 0.5s cubic-bezier(0.4,0,0.2,1)' }}

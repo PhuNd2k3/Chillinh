@@ -337,3 +337,25 @@
 .collapse-content.open {
     max-height: 2000px;
 }
+
+.duy {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.duy h3 {
+    margin: 0;
+}
+
+.duy button {
+    padding: 10px;
+}
+
+.duy button p {
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+}
